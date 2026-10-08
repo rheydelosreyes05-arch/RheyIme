@@ -18,6 +18,10 @@
     <!-- Capcut Editor Runtime -->
     <script src="https://sf16-web-login-neutral.capcutstatic.com/obj/capcut-web-login-static/ies/ccweb/ai_design_artifact_sdk/base-runtime.0.1.0.prod.min.js"></script>
 
+    <!-- Envelope artwork is the first thing the guest sees -->
+    <link rel="preload" as="image" href="./assets/envelope.png">
+    <link rel="preload" as="image" href="./assets/background envelope.png">
+
     <style>
       :root {
         --color-primary: var(--primary-color, #6B1D2F);     /* Burgundy default */
@@ -136,11 +140,7 @@
         display: grid;
         place-items: center;
         overflow: hidden;
-        background:
-          radial-gradient(circle at 20% 10%, rgba(220, 239, 214, 0.82), transparent 20%),
-          radial-gradient(circle at 80% 18%, rgba(174, 208, 166, 0.45), transparent 22%),
-          radial-gradient(circle at 50% 80%, rgba(28, 52, 32, 0.7), rgba(8, 20, 10, 0.96) 58%, rgba(4, 13, 8, 1) 100%),
-          linear-gradient(135deg, #dfeee1 0%, #b6d0b0 22%, #1d3b29 56%, #10271d 100%);
+        background: #0b1710;
         z-index: 100;
         transition: opacity 1.1s ease, visibility 1.1s ease, transform 1.2s ease;
       }
@@ -149,26 +149,16 @@
         content: "";
         position: absolute;
         inset: 0;
-        background:
-          radial-gradient(circle at 18% 28%, rgba(255,255,255,0.22), transparent 18%),
-          radial-gradient(circle at 76% 22%, rgba(255,255,255,0.18), transparent 14%),
-          linear-gradient(90deg, rgba(93, 162, 89, 0.12), rgba(31, 61, 43, 0.18), rgba(212,175,55,0.08)),
-          repeating-linear-gradient(0deg, rgba(185, 214, 178, 0.06), rgba(185, 214, 178, 0.06) 1px, transparent 1px, transparent 7px),
-          linear-gradient(135deg, rgba(17, 39, 30, 0.18), rgba(255,255,255,0.08));
-        opacity: 0.95;
+        background: url("./assets/background%20envelope.png") center / cover no-repeat;
+        opacity: 1;
         pointer-events: none;
       }
 
       .envelope-prelude::after {
         content: "";
         position: absolute;
-        inset: 7% 9%;
-        border-radius: 22px;
-        border: 1px solid rgba(212, 175, 55, 0.18);
-        background:
-          radial-gradient(circle at 12% 16%, rgba(157, 204, 150, 0.2), transparent 20%),
-          radial-gradient(circle at 83% 24%, rgba(157, 204, 150, 0.2), transparent 20%),
-          radial-gradient(circle at 52% 64%, rgba(212,175,55,0.09), transparent 18%);
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(4, 13, 8, 0.5) 100%);
         pointer-events: none;
       }
 
@@ -180,296 +170,164 @@
 
       .envelope-stage {
         position: relative;
-        width: min(70vw, 520px);
-        height: min(52vw, 360px);
-        min-height: 280px;
+        z-index: 1;
+        width: min(86vw, 64vh, 430px);
+        aspect-ratio: 1240 / 1748;
         display: grid;
         place-items: center;
         animation: floatEnvelope 4s ease-in-out infinite;
         cursor: pointer;
-        background:
-          radial-gradient(circle at 20% 80%, rgba(133, 196, 122, 0.34), transparent 16%),
-          radial-gradient(circle at 80% 78%, rgba(150, 184, 125, 0.25), transparent 18%),
-          radial-gradient(circle at 50% 70%, rgba(54, 86, 62, 0.42), transparent 30%);
-        filter: drop-shadow(0 28px 45px rgba(4, 18, 12, 0.34));
+        perspective: 1700px;
+        filter: drop-shadow(0 30px 48px rgba(3, 16, 10, 0.5));
+        transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1), filter 1.4s ease;
       }
 
-      .envelope-stage::before {
-        content: "";
-        position: absolute;
-        width: 130px;
-        height: 130px;
-        left: 7%;
-        bottom: 8%;
-        background: radial-gradient(circle at 35% 30%, rgba(214, 175, 118, 0.45), rgba(214, 175, 118, 0.12) 20%, transparent 52%);
-        border-radius: 50%;
-        opacity: 0.9;
-        filter: blur(2px);
-      }
-
-      .envelope-stage::after {
-        content: "";
-        position: absolute;
-        width: 130px;
-        height: 130px;
-        right: 7%;
-        bottom: 8%;
-        background: radial-gradient(circle at 65% 30%, rgba(214, 175, 118, 0.45), rgba(214, 175, 118, 0.12) 20%, transparent 52%);
-        border-radius: 50%;
-        opacity: 0.9;
-        filter: blur(2px);
-      }
-
-      .envelope-backdrop {
-        position: absolute;
-        inset: 14% 10% 6%;
-        background:
-          linear-gradient(135deg, rgba(35, 72, 51, 0.96), rgba(13, 30, 22, 0.98));
-        border: 1px solid rgba(212, 175, 55, 0.38);
-        border-radius: 18px;
-        box-shadow:
-          0 26px 60px rgba(2, 18, 12, 0.38),
-          inset 0 2px 12px rgba(255,255,255,0.12),
-          inset 0 -14px 18px rgba(4, 12, 9, 0.18),
-          inset 10px 0 18px rgba(255,255,255,0.03),
-          inset -10px 0 18px rgba(0,0,0,0.08);
-        transform: perspective(1200px) rotateX(8deg);
-      }
-
-      .envelope-backdrop::before {
-        content: "";
+      /* The envelope artwork straight from assets/envelope.png */
+      .env-photo {
         position: absolute;
         inset: 0;
-        background:
-          linear-gradient(90deg, rgba(16, 38, 26, 0.28), rgba(255,255,255,0.08), rgba(16, 38, 26, 0.28)),
-          repeating-linear-gradient(0deg, rgba(233, 244, 220, 0.025), rgba(233, 244, 220, 0.025) 1px, transparent 1px, transparent 5px),
-          radial-gradient(circle at 20% 25%, rgba(179, 214, 164, 0.12), transparent 18%),
-          radial-gradient(circle at 80% 30%, rgba(194, 180, 126, 0.08), transparent 18%);
-        border-radius: inherit;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.2);
+        user-select: none;
+        -webkit-user-drag: none;
       }
 
-      .envelope-backdrop::after {
-        content: "";
+      /* Interior revealed once the flap folds away */
+      .env-interior {
         position: absolute;
-        inset: 8% 8%;
-        border-radius: 14px;
-        border: 1px solid rgba(255,255,255,0.06);
-        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+        inset: 0;
+        z-index: 2;
+        clip-path: polygon(0 0, 100% 0, 50% 27%);
+        background:
+          radial-gradient(circle at 50% 18%, rgba(120, 150, 105, 0.35), transparent 55%),
+          linear-gradient(180deg, #24361f 0%, #1a2a17 45%, #101c10 100%);
+        box-shadow: inset 0 -14px 26px rgba(0, 0, 0, 0.45);
+      }
+
+      /* Triangular flap: same artwork, hinged on the top edge */
+      .env-flap {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        transform-origin: top center;
+        transform-style: preserve-3d;
+        transition: transform 1.6s cubic-bezier(0.55, 0.05, 0.2, 1);
+        will-change: transform;
+      }
+
+      .env-flap-face {
+        position: absolute;
+        inset: 0;
+        clip-path: polygon(0 0, 100% 0, 50% 27%);
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: 10px 10px 0 0;
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .env-flap-front {
+        background-image: url("./assets/envelope.png");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+
+      .env-flap-back {
+        transform: rotateX(180deg);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.35)),
+          linear-gradient(180deg, #2b3f24 0%, #1c2c18 60%, #131f12 100%);
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.25);
+      }
+
+      /* Pocket front: duplicate of the artwork the letter slides out from behind */
+      .env-front {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        clip-path: polygon(0 27%, 100% 27%, 100% 100%, 0 100%);
+        background: url("./assets/envelope.png") center / cover no-repeat;
+        border-radius: 10px;
         pointer-events: none;
       }
 
-      .envelope-flap {
-        position: absolute;
-        inset: 12% 9% 18%;
-        background:
-          linear-gradient(180deg, rgba(38, 72, 54, 0.98), rgba(15, 37, 27, 0.98)),
-          radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 65%);
-        clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
-        border: 1px solid rgba(212,175,55,0.28);
-        border-radius: 10px;
-        transform-origin: top center;
-        transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1), filter 1s ease;
-        box-shadow:
-          inset 0 2px 10px rgba(255,255,255,0.08),
-          inset 0 -10px 18px rgba(0,0,0,0.08),
-          0 8px 18px rgba(0,0,0,0.10);
-        z-index: 2;
-      }
-
-      .envelope-flap::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.08));
-        clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
-      }
-
-      .envelope-side {
-        position: absolute;
-        inset: 18% 10% 8%;
-        background: linear-gradient(180deg, rgba(27, 62, 46, 0.94), rgba(12, 26, 19, 0.97));
-        border: 1px solid rgba(212,175,55,0.18);
-        border-radius: 12px;
-        box-shadow: inset 0 2px 10px rgba(255,255,255,0.06), inset 0 -10px 16px rgba(0,0,0,0.08);
-        z-index: 1;
-      }
-
-      .envelope-floral {
-        position: absolute;
-        width: 130px;
-        height: 90px;
-        opacity: 0.82;
-        filter: drop-shadow(0 8px 12px rgba(120, 95, 62, 0.12));
-        z-index: 4;
-      }
-
-      .envelope-floral::before,
-      .envelope-floral::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, rgba(163, 123, 91, 0.26) 0 22%, transparent 23% 100%);
-      }
-
-      .envelope-floral::before {
-        transform: rotate(-18deg) scale(1.05);
-        background:
-          radial-gradient(circle at 50% 35%, rgba(120, 158, 138, 0.35) 0 18%, transparent 19%),
-          radial-gradient(circle at 25% 55%, rgba(120, 158, 138, 0.32) 0 16%, transparent 17%),
-          radial-gradient(circle at 75% 55%, rgba(120, 158, 138, 0.32) 0 16%, transparent 17%),
-          linear-gradient(90deg, transparent 48%, rgba(80, 117, 100, 0.28) 49%, transparent 51%);
-      }
-
-      .envelope-floral::after {
-        background:
-          radial-gradient(circle at 50% 38%, rgba(194, 150, 106, 0.35) 0 12%, transparent 13%),
-          radial-gradient(circle at 25% 50%, rgba(194, 150, 106, 0.35) 0 11%, transparent 12%),
-          radial-gradient(circle at 75% 50%, rgba(194, 150, 106, 0.35) 0 11%, transparent 12%),
-          linear-gradient(90deg, transparent 48%, rgba(175, 131, 87, 0.28) 49%, transparent 51%);
-      }
-
-      .floral-left {
-        left: 12%;
-        bottom: 10%;
-        transform: rotate(-8deg);
-      }
-
-      .floral-right {
-        right: 12%;
-        bottom: 10%;
-        transform: scaleX(-1) rotate(-8deg);
-      }
-
-      .envelope-letter {
+      /* The letter that slides out of the envelope */
+      .env-letter {
         position: absolute;
         left: 50%;
-        bottom: 28%;
-        width: min(60vw, 310px);
-        height: min(42vw, 210px);
-        transform: translateX(-50%) translateY(44px) scale(0.95);
-        background: linear-gradient(180deg, rgba(18, 42, 28, 0.18), rgba(18, 42, 28, 0.08));
-        border: 1px solid rgba(212,175,55,0.18);
-        border-radius: 12px;
-        box-shadow: 0 15px 35px rgba(27, 57, 39, 0.12);
-        transition: transform 1.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
-        overflow: hidden;
+        top: 50%;
         z-index: 3;
-      }
-
-      .envelope-letter::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(135deg, rgba(212, 175, 55, 0.04), rgba(22, 53, 37, 0.02)),
-          repeating-linear-gradient(0deg, rgba(31, 60, 42, 0.015), rgba(31, 60, 42, 0.015) 1px, transparent 1px, transparent 6px),
-          radial-gradient(circle at 15% 20%, rgba(255,255,255,0.08), transparent 20%);
-      }
-
-      .letter-monogram {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: clamp(2rem, 2.5vw, 2.8rem);
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        line-height: 1.2;
-        color: #f3d88b;
+        width: 92%;
+        height: 58%;
+        padding: 7% 5%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.45rem;
         text-align: center;
-        text-shadow: 0 0 12px rgba(212,175,55,0.38), 0 0 20px rgba(212,175,55,0.24), 0 2px 0 rgba(93, 67, 17, 0.8);
-        filter: drop-shadow(0 3px 4px rgba(18, 30, 17, 0.2));
+        border-radius: 6px;
+        background: linear-gradient(160deg, #fbf8f1 0%, #f4efe3 55%, #ece5d5 100%);
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        box-shadow: 0 22px 44px rgba(2, 14, 8, 0.4);
+        transform: translate(-50%, -50%) translateY(46%) scale(0.9);
         opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.9s ease, visibility 0.9s ease;
+        transition:
+          transform 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s,
+          opacity 1.1s ease 0.5s;
+        pointer-events: none;
       }
 
-      .seal {
-        position: absolute;
-        left: 50%;
-        top: 56%;
-        width: 120px;
-        height: 120px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        background:
-          radial-gradient(circle at 35% 25%, rgba(255,247,214,1) 0%, rgba(246,209,98,1) 15%, rgba(212,175,55,0.94) 28%, rgba(170,124,38,0.9) 46%, rgba(110,79,19,0.96) 72%, rgba(72,52,20,1) 100%);
-        box-shadow:
-          0 16px 30px rgba(15, 31, 23, 0.24),
-          inset 0 3px 10px rgba(255,255,255,0.7),
-          inset 0 -12px 18px rgba(92, 53, 10, 0.28),
-          0 0 0 2px rgba(212,175,55,0.84);
-        display: grid;
-        place-items: center;
-        z-index: 5;
-        cursor: pointer;
-        transition: opacity 1.1s ease, transform 1.2s ease, box-shadow 0.4s ease;
+      .env-letter-kicker {
+        font-size: clamp(0.42rem, 1.5vw, 0.6rem);
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: #3d5333;
+        font-weight: 600;
       }
 
-      .seal:hover {
-        box-shadow:
-          0 20px 40px rgba(15, 31, 23, 0.35),
-          inset 0 3px 10px rgba(255,255,255,0.7),
-          inset 0 -12px 18px rgba(92, 53, 10, 0.28),
-          0 0 0 3px rgba(212,175,55,1),
-          0 0 25px rgba(212,175,55,0.4);
-      }
-
-      .seal::before {
-        content: "";
-        position: absolute;
-        inset: 8px;
-        border-radius: 50%;
-        border: 1px solid rgba(255,255,255,0.45);
-        box-shadow: inset 0 0 0 1px rgba(110,79,19,0.35);
-      }
-
-      .seal::after {
-        content: "";
-        position: absolute;
-        inset: 18px 18px auto auto;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(255,255,255,0.12) 55%, transparent 70%);
-        filter: blur(2px);
-      }
-
-      .seal-inner {
-        width: 82%;
-        height: 82%;
-        border: 1px solid rgba(212, 175, 55, 0.9);
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        background: rgba(255,255,255,0.04);
-      }
-
-      .seal-text {
+      .env-letter-mono {
         font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: 1.8rem;
+        font-size: clamp(1.6rem, 6vw, 2.6rem);
         font-weight: 700;
-        letter-spacing: 0.12em;
-        color: #fff2c5;
-        text-align: center;
-        line-height: 1.2;
-        text-shadow: 0 0 12px rgba(212,175,55,0.3), 0 0 18px rgba(145,97,16,0.28), 0 1px 0 rgba(93, 67, 17, 0.8);
+        letter-spacing: 0.14em;
+        line-height: 1;
+        color: #6b1d2f;
+      }
+
+      .env-letter-rule {
+        width: 42px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d4af37, transparent);
+      }
+
+      .env-letter-names {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(0.95rem, 3.4vw, 1.35rem);
+        color: #2c302e;
+        letter-spacing: 0.06em;
+      }
+
+      .env-letter-date {
+        font-size: clamp(0.45rem, 1.6vw, 0.62rem);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(44, 48, 46, 0.65);
+      }
+
+      /* Clickable seal sitting on the gold initials of the artwork */
+      .env-initials {
+        position: absolute;
+        left: 33.5%;
+        top: 39%;
+        width: 35%;
+        height: 24%;
+        z-index: 5;
+        border-radius: 16px;
         cursor: pointer;
-        transition: transform 0.3s ease;
-      }
-
-      .seal:hover .seal-text {
-        transform: scale(1.08);
-      }
-
-      @keyframes sealPulse {
-        0%, 100% { box-shadow: 0 16px 30px rgba(15, 31, 23, 0.24), inset 0 3px 10px rgba(255,255,255,0.7), inset 0 -12px 18px rgba(92, 53, 10, 0.28), 0 0 0 2px rgba(212,175,55,0.84); }
-        50% { box-shadow: 0 16px 30px rgba(15, 31, 23, 0.24), inset 0 3px 10px rgba(255,255,255,0.7), inset 0 -12px 18px rgba(92, 53, 10, 0.28), 0 0 0 4px rgba(212,175,55,1), 0 0 30px rgba(212,175,55,0.5); }
-      }
-
-      .envelope-stage:not(.opened) .seal {
-        animation: sealPulse 2.5s ease-in-out infinite;
+        transition: opacity 0.5s ease, transform 0.5s ease;
       }
 
       .hero-monogram {
@@ -487,55 +345,39 @@
         color: rgba(107, 29, 47, 0.85);
       }
 
-      .envelope-instruction {
-        position: absolute;
-        bottom: -48px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.74rem;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: rgba(75, 53, 46, 0.72);
-        text-align: center;
-        white-space: nowrap;
+      /* --- Opening choreography -------------------------------------- */
+      .envelope-prelude.opening .env-flap {
+        transform: rotateX(180deg);
       }
 
-      .envelope-prelude.opening .envelope-flap {
-        transform: rotateX(180deg) translateY(-28px);
-        filter: drop-shadow(0 12px 18px rgba(99, 74, 52, 0.12));
-      }
-
-      .envelope-prelude.opening .seal {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.6);
-        transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-
-      .envelope-prelude.opening .envelope-letter {
-        transform: translateX(-50%) translateY(-100px) scale(1.05);
-        transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
-      }
-
-      .envelope-prelude.opening .letter-monogram {
+      .envelope-prelude.opening .env-letter {
+        transform: translate(-50%, -50%) translateY(-36%) scale(1);
         opacity: 1;
-        visibility: visible;
-        transition: opacity 1.2s ease 0.3s, visibility 1.2s ease 0.3s;
       }
 
-      .envelope-prelude.opening .envelope-backdrop {
-        transform: perspective(1200px) rotateX(8deg) translateY(-12px);
-        transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-
-      .envelope-prelude.opening .envelope-floral {
-        opacity: 0.4;
-        transition: opacity 1s ease;
+      .envelope-prelude.opening .env-initials {
+        opacity: 0;
+        transform: scale(0.88);
+        pointer-events: none;
       }
 
       .envelope-prelude.opening .envelope-stage {
         animation: none;
-        transform: scale(1.02);
-        transition: transform 0.8s ease;
+        transform: scale(1.05);
+        filter: drop-shadow(0 40px 60px rgba(3, 16, 10, 0.55));
+      }
+
+      .envelope-prelude.dissolve .env-letter {
+        transform: translate(-50%, -50%) translateY(-36%) scale(1.14);
+        transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
+      }
+
+      .envelope-prelude.dissolve .env-photo,
+      .envelope-prelude.dissolve .env-front,
+      .envelope-prelude.dissolve .env-flap,
+      .envelope-prelude.dissolve .env-interior {
+        opacity: 0;
+        transition: opacity 1.4s ease;
       }
 
       .invitation-shell.is-visible {
@@ -550,15 +392,22 @@
 
       #lightbox {
         pointer-events: none;
-        background: transparent;
+        background: rgba(6, 16, 10, 0.62);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
         display: flex;
         align-items: center;
         justify-content: center;
         touch-action: manipulation;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.45s ease, visibility 0.45s ease;
       }
 
       #lightbox:not(.hidden) {
         pointer-events: auto;
+        opacity: 1;
+        visibility: visible;
       }
 
       #lightbox-img {
@@ -570,11 +419,48 @@
         flex-shrink: 0;
         object-fit: contain;
         background: transparent;
-        border-radius: 0;
+        border-radius: 6px;
         border: none;
-        box-shadow: none;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
         image-rendering: auto;
+        opacity: 0;
+        transform: scale(0.94) translateY(14px);
+        transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      #lightbox:not(.hidden) #lightbox-img {
         opacity: 1;
+        transform: none;
+      }
+
+      #gift-modal {
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(6, 16, 10, 0.62);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+      }
+
+      #gift-modal:not(.hidden) {
+        pointer-events: auto;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      #gift-modal-card {
+        opacity: 0;
+        transform: scale(0.94) translateY(16px);
+        transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      #gift-modal:not(.hidden) #gift-modal-card {
+        opacity: 1;
+        transform: none;
       }
 
       @keyframes floatEnvelope {
@@ -610,7 +496,7 @@
       }
     </style>
   </head>
-  <body class="relative"><div id="petals-container" class="fixed inset-0 pointer-events-none z-10"></div><div id="envelope-prelude" class="envelope-prelude" aria-live="polite"><div class="envelope-stage" role="button" tabindex="0" aria-label="Open wedding invitation envelope"><div class="envelope-backdrop"></div><div class="envelope-side"></div><div class="envelope-floral floral-left"></div><div class="envelope-floral floral-right"></div><div class="envelope-flap"></div><div class="envelope-letter"><div class="letter-monogram">Rhey &amp; Ime</div></div><div class="seal"><div class="seal-inner"><div class="seal-text">R<br>&amp;<br>I</div></div></div><div class="envelope-instruction">Click the envelope to open</div></div></div><div class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-3 rounded-full border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10"><div id="audio-visualizer" class="hidden flex items-end gap-[3px] h-5 w-6 mr-1"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><button id="music-btn" class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#3D5333] hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="music" aria-hidden="true" class="lucide lucide-music w-4 h-4"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg><span id="music-text">Play Romantic Music</span></button></div><div class="fixed bottom-6 left-6 z-50 flex items-center gap-2"><button id="petal-toggle-btn" title="Toggle Falling Petals" class="bg-white/95 backdrop-blur-md p-3 rounded-full border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10 flex items-center justify-center text-[#3D5333] hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wind" aria-hidden="true" class="lucide lucide-wind w-5 h-5"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"></path><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"></path><path d="M9.8 4.4A2 2 0 1 1 11 8H2"></path></svg></button><button id="personalizer-btn" title="Edit Invitation Details" class="bg-white/95 backdrop-blur-md p-3 rounded-full border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10 flex items-center justify-center text-[#3D5333] hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="edit-3" aria-hidden="true" class="lucide lucide-edit-3 w-5 h-5"><path d="M13 21h8"></path><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path></svg></button></div><div id="personalizer-drawer" class="fixed inset-y-0 right-0 w-full max-w-sm bg-white/98 backdrop-blur-md border-l border-[#D4AF37]/25 shadow-2xl z-50 translate-x-full transition-transform duration-500 ease-in-out flex flex-col hidden-on-export"><div class="p-6 border-b border-[#D4AF37]/20 flex items-center justify-between"><div><h3 class="font-serif-elegant text-xl font-bold text-[#6B1D2F]">Personalize Details</h3><p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Changes reflect instantly on-screen</p></div><button class="text-gray-400 hover:text-[#6B1D2F] transition-colors cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-6 h-6"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="p-6 overflow-y-auto flex-1 space-y-5"><!-- Groom & Bride --><div class="grid grid-cols-2 gap-3"><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Groom's Name</label><input type="text" id="input-groom" value="Rhey" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Bride's Name</label><input type="text" id="input-bride" value="Ime" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div></div><!-- Date & Time --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Wedding Date</label><input type="date" id="input-date" value="2026-12-26" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Wedding Time</label><input type="text" id="input-time" value="10:00 AM" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- Church details --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Church Venue</label><input type="text" id="input-church" value="Saint Joseph Parish Church" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Church City/Location</label><input type="text" id="input-church-loc" value="Sagay City, Negros Occidental" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- Reception details --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Reception Venue</label><input type="text" id="input-reception" value="The Sunn Hotel" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- RSVP Deadline --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">RSVP Deadline Date</label><input type="text" id="input-rsvp-deadline" value="November 31, 2026" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- Dynamic Theme Colors Panel --><div class="border-t border-[#D4AF37]/25 pt-4"><h4 class="font-serif-elegant text-xs font-bold text-[#6B1D2F] uppercase tracking-wider mb-3">Theme Colors (Live)</h4><div class="grid grid-cols-2 gap-3"><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Primary Color</label><input type="color" id="input-color-primary" value="#6B1D2F" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Sage/Olive Color</label><input type="color" id="input-color-sage" value="#3D5333" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Gold Accent</label><input type="color" id="input-color-gold" value="#D4AF37" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Background Beige</label><input type="color" id="input-color-beige" value="#F9F6F0" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div></div></div><!-- Custom Sponsors & Entourage Input Panel --><div class="border-t border-[#D4AF37]/25 pt-4 space-y-4"><h4 class="font-serif-elegant text-xs font-bold text-[#6B1D2F] uppercase tracking-wider mb-1">Entourage Lists Manager</h4><!-- Principal Sponsors Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Principal Sponsors</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-sponsors-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Dr. Samson Lausa" placeholder="Sponsor 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Dr. Aireen Jane Martorillas" placeholder="Sponsor 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Dr. Mofe Tingal Gantes" placeholder="Sponsor 3" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Joe D. Basanta" placeholder="Sponsor 4" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div><!-- Groomsmen Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Groomsmen List</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-groomsmen-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Nick BJ Bustillo" placeholder="Groomsman 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Loui Jay Guacen" placeholder="Groomsman 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Renz Layco" placeholder="Groomsman 3" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Louie Bañadera" placeholder="Groomsman 4" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Carmelo Lobaton" placeholder="Groomsman 5" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Jules Malabor" placeholder="Groomsman 6" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Bruce De Ocampo" placeholder="Groomsman 7" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div><!-- Bridesmaids Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Bridesmaids List</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-bridesmaids-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Raiza Muriel Pineda" placeholder="Bridesmaid 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Sophia Ysabel Lee" placeholder="Bridesmaid 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Jannielle Mei Balino" placeholder="Bridesmaid 3" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Hilary Shane Sanding" placeholder="Bridesmaid 4" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Reylyn Marie Tuna" placeholder="Bridesmaid 5" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Abby Peñacuba" placeholder="Bridesmaid 6" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Coleen Torregue" placeholder="Bridesmaid 7" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div><!-- Flower Girls Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Flower Girls List</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-flowergirls-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Astrid Elizabeth Danielle Ybarrita" placeholder="Flower Girl 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Mary Belle Catague" placeholder="Flower Girl 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div></div></div><div class="p-6 border-t border-[#D4AF37]/20 bg-gray-50 flex gap-2"><button class="w-full bg-[#3D5333] hover:bg-[#2C3B24] text-white text-[10px] font-bold uppercase tracking-widest py-3 rounded-lg transition-colors cursor-pointer">
+  <body class="relative"><div id="petals-container" class="fixed inset-0 pointer-events-none z-10"></div><div id="envelope-prelude" class="envelope-prelude" aria-live="polite"><div class="envelope-stage" role="button" tabindex="0" aria-label="Open wedding invitation envelope"><img class="env-photo" src="./assets/envelope.png" alt="Rhey and Ime wedding invitation envelope"><div class="env-interior"></div><div class="env-letter"><span class="env-letter-kicker">Together with their families</span><span class="env-letter-mono">R &amp; I</span><span class="env-letter-rule"></span><span class="env-letter-names">Rhey &amp; Ime</span><span class="env-letter-date">December 26, 2026 • Sagay City</span></div><div class="env-flap"><div class="env-flap-face env-flap-front"></div><div class="env-flap-face env-flap-back"></div></div><div class="env-front" aria-hidden="true"></div><span class="env-initials" aria-hidden="true"></span></div></div><div class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-3 rounded-full border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10"><div id="audio-visualizer" class="hidden flex items-end gap-[3px] h-5 w-6 mr-1"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><button id="music-btn" class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#3D5333] hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="music" aria-hidden="true" class="lucide lucide-music w-4 h-4"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg><span id="music-text">Play Romantic Music</span></button></div><div class="fixed bottom-6 left-6 z-50 flex items-center gap-2"><button id="petal-toggle-btn" title="Toggle Falling Petals" class="bg-white/95 backdrop-blur-md p-3 rounded-full border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10 flex items-center justify-center text-[#3D5333] hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wind" aria-hidden="true" class="lucide lucide-wind w-5 h-5"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"></path><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"></path><path d="M9.8 4.4A2 2 0 1 1 11 8H2"></path></svg></button><button id="personalizer-btn" title="Edit Invitation Details" class="bg-white/95 backdrop-blur-md p-3 rounded-full border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10 flex items-center justify-center text-[#3D5333] hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="edit-3" aria-hidden="true" class="lucide lucide-edit-3 w-5 h-5"><path d="M13 21h8"></path><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path></svg></button></div><div id="personalizer-drawer" class="fixed inset-y-0 right-0 w-full max-w-sm bg-white/98 backdrop-blur-md border-l border-[#D4AF37]/25 shadow-2xl z-50 translate-x-full transition-transform duration-500 ease-in-out flex flex-col hidden-on-export"><div class="p-6 border-b border-[#D4AF37]/20 flex items-center justify-between"><div><h3 class="font-serif-elegant text-xl font-bold text-[#6B1D2F]">Personalize Details</h3><p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Changes reflect instantly on-screen</p></div><button class="text-gray-400 hover:text-[#6B1D2F] transition-colors cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-6 h-6"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="p-6 overflow-y-auto flex-1 space-y-5"><!-- Groom & Bride --><div class="grid grid-cols-2 gap-3"><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Groom's Name</label><input type="text" id="input-groom" value="Rhey" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Bride's Name</label><input type="text" id="input-bride" value="Ime" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div></div><!-- Date & Time --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Wedding Date</label><input type="date" id="input-date" value="2026-12-26" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Wedding Time</label><input type="text" id="input-time" value="10:00 AM" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- Church details --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Church Venue</label><input type="text" id="input-church" value="Saint Joseph Parish Church" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Church City/Location</label><input type="text" id="input-church-loc" value="Sagay City, Negros Occidental" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- Reception details --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">Reception Venue</label><input type="text" id="input-reception" value="The Sunn Hotel" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- RSVP Deadline --><div><label class="block text-[10px] uppercase font-bold text-[#3D5333] mb-1">RSVP Deadline Date</label><input type="text" id="input-rsvp-deadline" value="November 31, 2026" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:border-[#6B1D2F] focus:outline-none"></div><!-- Dynamic Theme Colors Panel --><div class="border-t border-[#D4AF37]/25 pt-4"><h4 class="font-serif-elegant text-xs font-bold text-[#6B1D2F] uppercase tracking-wider mb-3">Theme Colors (Live)</h4><div class="grid grid-cols-2 gap-3"><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Primary Color</label><input type="color" id="input-color-primary" value="#6B1D2F" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Sage/Olive Color</label><input type="color" id="input-color-sage" value="#3D5333" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Gold Accent</label><input type="color" id="input-color-gold" value="#D4AF37" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div><div><label class="block text-[9px] uppercase font-bold text-gray-500 mb-1">Background Beige</label><input type="color" id="input-color-beige" value="#F9F6F0" class="w-full h-8 p-0.5 border border-gray-200 rounded-lg cursor-pointer"></div></div></div><!-- Custom Sponsors & Entourage Input Panel --><div class="border-t border-[#D4AF37]/25 pt-4 space-y-4"><h4 class="font-serif-elegant text-xs font-bold text-[#6B1D2F] uppercase tracking-wider mb-1">Entourage Lists Manager</h4><!-- Principal Sponsors Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Principal Sponsors</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-sponsors-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="DR. SAMSON LAUSA" placeholder="Sponsor 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="DR. AIREEN JANE MARTORILLAS" placeholder="Sponsor 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="DR. MOFE TINGAL GANTES" placeholder="Sponsor 3" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="DR. JOE D. BASANTA" placeholder="Sponsor 4" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div><!-- Groomsmen Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Groomsmen List</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-groomsmen-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Nick BJ Bustillo" placeholder="Groomsman 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Loui Jay Guacen" placeholder="Groomsman 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Renz Layco" placeholder="Groomsman 3" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Louie Bañadera" placeholder="Groomsman 4" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Carmelo Lobaton" placeholder="Groomsman 5" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Jules Malabor" placeholder="Groomsman 6" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Bruce De Ocampo" placeholder="Groomsman 7" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div><!-- Bridesmaids Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Bridesmaids List</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-bridesmaids-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Raiza Muriel Pineda" placeholder="Bridesmaid 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Sophia Ysabel Lee" placeholder="Bridesmaid 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Jannielle Mei Balino" placeholder="Bridesmaid 3" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Hilary Shane Sanding" placeholder="Bridesmaid 4" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Reylyn Marie Tuna" placeholder="Bridesmaid 5" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Abby Peñacuba" placeholder="Bridesmaid 6" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Coleen Torregue" placeholder="Bridesmaid 7" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div><!-- Flower Girls Dynamic Editor --><div class="space-y-2"><div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-wider text-[#3D5333]">Flower Girls List</span><button class="text-xs bg-[#3D5333]/10 hover:bg-[#3D5333]/20 text-[#3D5333] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer font-bold">+ Add</button></div><div id="drawer-flowergirls-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1"><div class="flex items-center gap-1.5"><input type="text" value="Astrid Elizabeth Danielle Ybarrita" placeholder="Flower Girl 1" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="flex items-center gap-1.5"><input type="text" value="Mary Belle Catague" placeholder="Flower Girl 2" class="flex-1 px-2 py-1 text-[11px] border border-gray-200 rounded focus:outline-none"><button title="Remove" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div></div></div></div><div class="p-6 border-t border-[#D4AF37]/20 bg-gray-50 flex gap-2"><button class="w-full bg-[#3D5333] hover:bg-[#2C3B24] text-white text-[10px] font-bold uppercase tracking-widest py-3 rounded-lg transition-colors cursor-pointer">
           Done Editing
         </button></div></div><header class="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-[#D4AF37]/10 transition-all duration-300"><div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center"><a href="#" id="nav-initials" class="font-serif-elegant text-2xl font-semibold tracking-widest text-[#6B1D2F]">R &amp; I</a><nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-[#2C302E]/80"><a href="#hero" class="hover:text-[#D4AF37] transition-colors duration-300">Home</a><a href="#ceremony" class="hover:text-[#D4AF37] transition-colors duration-300">Invitation</a><a href="#timeline" class="hover:text-[#D4AF37] transition-colors duration-300">Schedule</a><a href="#entourage" class="hover:text-[#D4AF37] transition-colors duration-300">Entourage</a><a href="#attire" class="hover:text-[#D4AF37] transition-colors duration-300">Attire Guide</a><a href="#suite" class="hover:text-[#D4AF37] transition-colors duration-300">Print Suite</a></nav></div></header><div id="invitation-shell" class="invitation-shell"><div data-export-target="invitation"><section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 px-6 overflow-hidden bg-cover bg-center" style="background-image:linear-gradient(rgba(249, 246, 240, 0.45), rgba(249, 246, 240, 0.95)), url(&quot;./assets/wedding-theme-bg.png&quot;);"><div class="max-w-4xl mx-auto text-center z-20 flex flex-col items-center"><!-- Elegantly Composed Header Frame with Baroque details --><div class="border border-[#D4AF37]/30 p-12 md:p-16 rounded-2xl bg-white/40 backdrop-blur-sm max-w-3xl mx-auto shadow-sm shadow-[#D4AF37]/5"><p class="text-xs uppercase tracking-[0.3em] font-semibold text-[#3D5333] mb-4">Together with their families</p><p class="text-[11px] uppercase tracking-widest text-[#D4AF37] font-bold mb-6">Save Our Date</p><h1 id="hero-names" class="font-serif-elegant text-5xl md:text-7xl font-light tracking-wide text-[#6B1D2F] mb-6">
             Rhey &amp; Ime
@@ -629,7 +515,7 @@
         </button><button type="button" id="tab-btn-secondary" class="tab-btn px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-white border border-[#D4AF37]/30 text-[#3D5333] hover:bg-[#3D5333]/5 transition-all cursor-pointer">
           Secondary Sponsors
         </button></div><!-- Tab Content Area --><div class="bg-white border border-[#D4AF37]/20 rounded-3xl p-8 md:p-12 shadow-sm shadow-[#D4AF37]/5 min-h-[400px]"><!-- Tab 1: Parents & Sponsors --><div id="tab-content-parents" class="tab-panel space-y-12 transition-opacity duration-300"><div class="grid md:grid-cols-2 gap-10"><!-- Parents of the Groom --><div class="border border-[#D4AF37]/15 p-6 rounded-xl bg-[#3D5333]/5"><h4 class="font-serif-elegant text-lg italic text-[#6B1D2F] border-b border-[#D4AF37]/20 pb-2 mb-4 font-semibold">Parents of the Groom</h4><p class="text-sm font-semibold text-[#2C302E]">Mr. Renante Delos Reyes</p><p class="text-xs text-[#2C302E]/60 mb-3">Father of the Groom</p><p class="text-sm font-semibold text-[#2C302E]">Mrs. Ma. Christina Delos Reyes</p><p class="text-xs text-[#2C302E]/60">Mother of the Groom</p></div><!-- Parents of the Bride --><div class="border border-[#D4AF37]/15 p-6 rounded-xl bg-[#3D5333]/5"><h4 class="font-serif-elegant text-lg italic text-[#6B1D2F] border-b border-[#D4AF37]/20 pb-2 mb-4 font-semibold">Parents of the Bride</h4><p class="text-sm font-semibold text-[#2C302E]">Mr. Rene Sibug</p><p class="text-xs text-[#2C302E]/60 mb-3">Uncle of the Bride</p><p class="text-sm font-semibold text-[#2C302E]">Mrs. Emelita Catague</p><p class="text-xs text-[#2C302E]/60 mb-4">Mother of the Bride</p><p class="text-[10px] italic text-[#6B1D2F] bg-[#6B1D2F]/5 px-3 py-2 rounded">
-                ❤️ In loving memory of the Bride's late father: <strong>Nestor Catague</strong></p></div></div><!-- Principal Sponsors --><div><h4 class="font-serif-elegant text-2xl font-light text-center text-[#6B1D2F] mb-6">Principal Sponsors</h4><div id="sponsors-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto text-center"><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">Dr. Samson Lausa</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">Dr. Aireen Jane Martorillas</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">Dr. Mofe Tingal Gantes</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">Joe D. Basanta</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div></div></div></div><!-- Tab 2: Main Entourage --><div id="tab-content-entourage-main" class="tab-panel hidden space-y-12 transition-opacity duration-300"><div class="grid md:grid-cols-2 gap-10"><!-- Best Man & Groom's Men --><div><h4 class="font-serif-elegant text-xl font-semibold text-[#6B1D2F] border-b border-[#D4AF37]/20 pb-2 mb-6">Groom's Side</h4><div class="space-y-4"><div class="bg-[#3D5333]/5 p-4 rounded-xl border-l-4 border-[#D4AF37]"><p class="text-xs text-[#D4AF37] uppercase tracking-widest font-bold">Best Man</p><p class="text-sm font-bold text-[#2C302E]">Hanns Vincent Gantes</p></div><div><p class="text-xs text-[#3D5333] uppercase tracking-widest font-bold mb-2">Groomsmen</p><ul id="groomsmen-list" class="grid grid-cols-2 gap-2 text-sm text-[#2C302E]/85"><li>• Nick BJ Bustillo</li><li>• Loui Jay Guacen</li><li>• Renz Layco</li><li>• Louie Bañadera</li><li>• Carmelo Lobaton</li><li>• Jules Malabor</li><li>• Bruce De Ocampo</li></ul></div><div class="bg-gray-50 p-3 rounded-lg mt-3 border border-gray-100"><p class="text-xs text-gray-400 uppercase font-semibold">Junior Groomsman</p><p class="text-sm font-semibold text-[#2C302E]">Cynereck Ayco</p></div></div></div><!-- Bride's Side --><div><h4 class="font-serif-elegant text-xl font-semibold text-[#6B1D2F] border-b border-[#D4AF37]/20 pb-2 mb-6">Bride's Side</h4><div class="space-y-4"><div class="bg-[#3D5333]/5 p-4 rounded-xl border-l-4 border-[#D4AF37]"><p class="text-xs text-[#D4AF37] uppercase tracking-widest font-bold">Man of Honor</p><p class="text-sm font-bold text-[#2C302E]">Moises Bolanio</p></div><div><p class="text-xs text-[#3D5333] uppercase tracking-widest font-bold mb-2">Bridesmaids</p><ul id="bridesmaids-list" class="grid grid-cols-2 gap-2 text-sm text-[#2C302E]/85"><li>• Raiza Muriel Pineda</li><li>• Sophia Ysabel Lee</li><li>• Jannielle Mei Balino</li><li>• Hilary Shane Sanding</li><li>• Reylyn Marie Tuna</li><li>• Abby Peñacuba</li><li>• Coleen Torregue</li></ul></div><div class="bg-gray-50 p-3 rounded-lg mt-3 border border-gray-100"><p class="text-xs text-gray-400 uppercase font-semibold">Junior Bridesmaid</p><p class="text-sm font-semibold text-[#2C302E]">Ma. Amelia Reene Delos Reyes</p></div></div></div></div></div><!-- Tab 3: Secondary Sponsors --><div id="tab-content-secondary" class="tab-panel hidden space-y-8 transition-opacity duration-300"><div class="grid md:grid-cols-3 gap-6"><!-- Veil, Chord, Candle --><div class="bg-gray-50 p-6 rounded-2xl border border-[#D4AF37]/15"><span class="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block mb-1">Veil Sponsors</span><p class="text-sm font-bold text-[#2C302E]">Mr. Petrex Sa-An</p><p class="text-sm font-bold text-[#2C302E] mb-3">Mrs. Renalyn Sa-An</p><p class="text-xs text-gray-400">To clothe the couple in harmony and unity</p></div><div class="bg-gray-50 p-6 rounded-2xl border border-[#D4AF37]/15"><span class="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block mb-1">Cord Sponsors</span><p class="text-sm font-bold text-[#2C302E]">Ranjelie Charizz Tianero</p><p class="text-sm font-bold text-[#2C302E] mb-3">Adrian Tianero</p><p class="text-xs text-gray-400">To bind the couple in marriage bond and loyalty</p></div><div class="bg-gray-50 p-6 rounded-2xl border border-[#D4AF37]/15"><span class="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block mb-1">Candle Sponsors</span><p class="text-sm font-bold text-[#2C302E]">Mr. Junjo Brian Ybarrita</p><p class="text-sm font-bold text-[#2C302E] mb-3">Mrs. Lyra Ybarrita</p><p class="text-xs text-gray-400">To light their path and guide their home</p></div></div><div class="grid md:grid-cols-2 gap-6 mt-8"><!-- Bearers --><div class="border border-[#D4AF37]/15 p-6 rounded-2xl bg-[#3D5333]/5"><h5 class="font-serif-elegant text-lg font-bold text-[#6B1D2F] mb-4">Honorary Bearers</h5><div class="grid grid-cols-3 gap-4"><div><p class="text-xs text-[#D4AF37] uppercase font-bold">Coin Bearer</p><p class="text-sm font-semibold text-[#2C302E]">Sean Khiel Belarmino</p></div><div><p class="text-xs text-[#D4AF37] uppercase font-bold">Bible Bearer</p><p class="text-sm font-semibold text-[#2C302E]">Castiel John Sa-An</p></div><div><p class="text-xs text-[#D4AF37] uppercase font-bold">Ring Bearer</p><p class="text-sm font-semibold text-[#2C302E]">Marcus Khiel Belarmino</p></div></div></div><!-- Flower Girls --><div class="border border-[#D4AF37]/15 p-6 rounded-2xl bg-[#3D5333]/5"><h5 class="font-serif-elegant text-lg font-bold text-[#6B1D2F] mb-4">Flower Girls</h5><div id="flowergirls-grid" class="grid grid-cols-2 gap-4"><div><p class="text-sm font-semibold text-[#2C302E]">Astrid Elizabeth Danielle Ybarrita</p><span class="text-[10px] text-gray-400">Flower Girl</span></div><div><p class="text-sm font-semibold text-[#2C302E]">Mary Belle Catague</p><span class="text-[10px] text-gray-400">Flower Girl</span></div></div></div></div></div></div></section><section id="attire" class="bg-white py-24 px-6 border-y border-[#D4AF37]/10"><div class="max-w-6xl mx-auto"><div class="text-center mb-12"><p class="text-xs uppercase tracking-[0.25em] font-semibold text-[#3D5333] mb-2">Style Guidelines</p><h2 class="font-serif-elegant text-4xl md:text-5xl font-light tracking-wide text-[#6B1D2F]">Dress Code &amp; Colors</h2><div class="w-12 h-px bg-[#D4AF37] mx-auto mt-4"></div><p class="text-sm text-[#2C302E]/70 max-w-lg mx-auto mt-4 font-light">
+                ❤️ In loving memory of the Bride's late father: <strong>Nestor Catague</strong></p></div></div><!-- Principal Sponsors --><div><h4 class="font-serif-elegant text-2xl font-light text-center text-[#6B1D2F] mb-6">Principal Sponsors</h4><div id="sponsors-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto text-center"><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">DR. SAMSON LAUSA</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">DR. AIREEN JANE MARTORILLAS</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">DR. MOFE TINGAL GANTES</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">DR. JOE D. BASANTA</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div><div class="bg-gray-50 p-4 rounded-xl border border-gray-100"><p class="text-sm font-semibold text-[#2C302E]">CONG JEFFREY FERRER</p><span class="text-[10px] text-gray-400">Principal Sponsor</span></div></div></div></div><!-- Tab 2: Main Entourage --><div id="tab-content-entourage-main" class="tab-panel hidden space-y-12 transition-opacity duration-300"><div class="grid md:grid-cols-2 gap-10"><!-- Best Man & Groom's Men --><div><h4 class="font-serif-elegant text-xl font-semibold text-[#6B1D2F] border-b border-[#D4AF37]/20 pb-2 mb-6">Groom's Side</h4><div class="space-y-4"><div class="bg-[#3D5333]/5 p-4 rounded-xl border-l-4 border-[#D4AF37]"><p class="text-xs text-[#D4AF37] uppercase tracking-widest font-bold">Best Man</p><p class="text-sm font-bold text-[#2C302E]">MR. HANNZ VINZENZ GANTES</p></div><div><p class="text-xs text-[#3D5333] uppercase tracking-widest font-bold mb-2">Groomsmen</p><ul id="groomsmen-list" class="grid grid-cols-2 gap-2 text-sm text-[#2C302E]/85"><li>• MR. Nick BJ Bustillo</li><li>• MR. Loui Jay Guacen</li><li>• MR. Renz Layco</li><li>• MR. Louie Bañadera</li><li>• MR. Carmelo Lobaton</li><li>• MR. Jules Malabor</li><li>• MR. Bruce De Ocampo</li></ul></div><div class="bg-gray-50 p-3 rounded-lg mt-3 border border-gray-100"><p class="text-xs text-gray-400 uppercase font-semibold">Junior Groomsman</p><p class="text-sm font-semibold text-[#2C302E]">Cynereck Ayco</p></div></div></div><!-- Bride's Side --><div><h4 class="font-serif-elegant text-xl font-semibold text-[#6B1D2F] border-b border-[#D4AF37]/20 pb-2 mb-6">Bride's Side</h4><div class="space-y-4"><div class="bg-[#3D5333]/5 p-4 rounded-xl border-l-4 border-[#D4AF37]"><p class="text-xs text-[#D4AF37] uppercase tracking-widest font-bold">Man of Honor</p><p class="text-sm font-bold text-[#2C302E]">Moises Bolanio</p></div><div><p class="text-xs text-[#3D5333] uppercase tracking-widest font-bold mb-2">Bridesmaids</p><ul id="bridesmaids-list" class="grid grid-cols-2 gap-2 text-sm text-[#2C302E]/85"><li>• Raiza Muriel Pineda</li><li>• Sophia Ysabel Lee</li><li>• Jannielle Mei Balino</li><li>• Hilary Shane Sanding</li><li>• Reylyn Marie Tuna</li><li>• Abby Peñacuba</li><li>• Coleen Torregue</li></ul></div><div class="bg-gray-50 p-3 rounded-lg mt-3 border border-gray-100"><p class="text-xs text-gray-400 uppercase font-semibold">Junior Bridesmaid</p><p class="text-sm font-semibold text-[#2C302E]">Ma. Amelia Reene Delos Reyes</p></div></div></div></div></div><!-- Tab 3: Secondary Sponsors --><div id="tab-content-secondary" class="tab-panel hidden space-y-8 transition-opacity duration-300"><div class="grid md:grid-cols-3 gap-6"><!-- Veil, Chord, Candle --><div class="bg-gray-50 p-6 rounded-2xl border border-[#D4AF37]/15"><span class="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block mb-1">Veil Sponsors</span><p class="text-sm font-bold text-[#2C302E]">Mr. Petrex Sa-An</p><p class="text-sm font-bold text-[#2C302E] mb-3">Mrs. Renalyn Sa-An</p><p class="text-xs text-gray-400">To clothe the couple in harmony and unity</p></div><div class="bg-gray-50 p-6 rounded-2xl border border-[#D4AF37]/15"><span class="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block mb-1">Cord Sponsors</span><p class="text-sm font-bold text-[#2C302E]">Ranjelie Charizz Tianero</p><p class="text-sm font-bold text-[#2C302E] mb-3">Adrian Tianero</p><p class="text-xs text-gray-400">To bind the couple in marriage bond and loyalty</p></div><div class="bg-gray-50 p-6 rounded-2xl border border-[#D4AF37]/15"><span class="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block mb-1">Candle Sponsors</span><p class="text-sm font-bold text-[#2C302E]">Mr. Junjo Brian Ybarrita</p><p class="text-sm font-bold text-[#2C302E] mb-3">Mrs. Lyra Ybarrita</p><p class="text-xs text-gray-400">To light their path and guide their home</p></div></div><div class="grid md:grid-cols-2 gap-6 mt-8"><!-- Bearers --><div class="border border-[#D4AF37]/15 p-6 rounded-2xl bg-[#3D5333]/5"><h5 class="font-serif-elegant text-lg font-bold text-[#6B1D2F] mb-4">Honorary Bearers</h5><div class="grid grid-cols-3 gap-4"><div><p class="text-xs text-[#D4AF37] uppercase font-bold">Coin Bearer</p><p class="text-sm font-semibold text-[#2C302E]">Sean Khiel Belarmino</p></div><div><p class="text-xs text-[#D4AF37] uppercase font-bold">Bible Bearer</p><p class="text-sm font-semibold text-[#2C302E]">Castiel John Sa-An</p></div><div><p class="text-xs text-[#D4AF37] uppercase font-bold">Ring Bearer</p><p class="text-sm font-semibold text-[#2C302E]">Marcus Khiel Belarmino</p></div></div></div><!-- Flower Girls --><div class="border border-[#D4AF37]/15 p-6 rounded-2xl bg-[#3D5333]/5"><h5 class="font-serif-elegant text-lg font-bold text-[#6B1D2F] mb-4">Flower Girls</h5><div id="flowergirls-grid" class="grid grid-cols-2 gap-4"><div><p class="text-sm font-semibold text-[#2C302E]">Astrid Elizabeth Danielle Ybarrita</p><span class="text-[10px] text-gray-400">Flower Girl</span></div><div><p class="text-sm font-semibold text-[#2C302E]">Mary Belle Catague</p><span class="text-[10px] text-gray-400">Flower Girl</span></div></div></div></div></div></div></section><section id="attire" class="bg-white py-24 px-6 border-y border-[#D4AF37]/10"><div class="max-w-6xl mx-auto"><div class="text-center mb-12"><p class="text-xs uppercase tracking-[0.25em] font-semibold text-[#3D5333] mb-2">Style Guidelines</p><h2 class="font-serif-elegant text-4xl md:text-5xl font-light tracking-wide text-[#6B1D2F]">Dress Code &amp; Colors</h2><div class="w-12 h-px bg-[#D4AF37] mx-auto mt-4"></div><p class="text-sm text-[#2C302E]/70 max-w-lg mx-auto mt-4 font-light">
             We kindly ask our honored guests to dress in our elegant color palette to create beautiful, cohesive wedding memories.
           </p></div><!-- Interactive Role Selection Pills --><div class="flex flex-wrap justify-center gap-2 mb-12 max-w-3xl mx-auto"><button id="attire-btn-guest" class="attire-role-btn px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest transition-all duration-300 cursor-pointer shadow-md bg-transparent border border-[#D4AF37]/30 text-[#3D5333] hover:bg-transparent">
             General Guest
@@ -648,19 +534,23 @@
                   Feel free to dress in any combination of our four wedding colors. Mix and match for a coordinated, editorial group portrait!
                 </p></div></div></div><!-- Right: Interactive Color Palette & Selector --><div class="bg-gradient-to-br from-[#F9F6F0] to-white p-8 md:p-10 rounded-3xl border border-[#D4AF37]/20 flex flex-col justify-between shadow-md shadow-[#D4AF37]/5"><div><h4 class="font-serif-elegant text-xl font-semibold text-[#6B1D2F] mb-2 text-center md:text-left">Interactive Color Swatches</h4><p class="text-xs text-gray-500 mb-8 text-center md:text-left">Click on any swatch below to explore coordinates and color meanings:</p><div class="grid grid-cols-4 gap-4 max-w-md mx-auto mb-10"><!-- Olive Green --><div data-color="olive" class="swatch-container flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105" style="opacity:1;transform:scale(1);"><div id="ring-olive" class="swatch-ring p-1 rounded-full border-2 border-[#D4AF37] transition-all duration-300 ring-4 ring-[#D4AF37]/40" style="border-top-color:rgb(212, 175, 55);border-right-color:rgb(212, 175, 55);border-bottom-color:rgb(212, 175, 55);border-left-color:rgb(212, 175, 55);"><div class="w-14 h-14 rounded-full bg-[#3D5333] shadow-md"></div></div><span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Olive</span></div><!-- Burgundy --><div data-color="burgundy" class="swatch-container flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105" style="opacity:1;transform:scale(1);"><div id="ring-burgundy" class="swatch-ring p-1 rounded-full border-2 border-transparent transition-all duration-300" style="border-top-color:rgb(212, 175, 55);border-right-color:rgb(212, 175, 55);border-bottom-color:rgb(212, 175, 55);border-left-color:rgb(212, 175, 55);"><div class="w-14 h-14 rounded-full bg-[#6B1D2F] shadow-md"></div></div><span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Burgundy</span></div><!-- Black --><div data-color="black" class="swatch-container flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105" style="opacity:1;transform:scale(1);"><div id="ring-black" class="swatch-ring p-1 rounded-full border-2 border-transparent transition-all duration-300" style="border-top-color:rgb(212, 175, 55);border-right-color:rgb(212, 175, 55);border-bottom-color:rgb(212, 175, 55);border-left-color:rgb(212, 175, 55);"><div class="w-14 h-14 rounded-full bg-[#1A1A1A] shadow-md"></div></div><span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Black</span></div><!-- Beige --><div data-color="beige" class="swatch-container flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105" style="opacity:1;transform:scale(1);"><div id="ring-beige" class="swatch-ring p-1 rounded-full border-2 border-transparent transition-all duration-300" style="border-top-color:rgb(212, 175, 55);border-right-color:rgb(212, 175, 55);border-bottom-color:rgb(212, 175, 55);border-left-color:rgb(212, 175, 55);"><div class="w-14 h-14 rounded-full bg-[#E6D5C3] shadow-md"></div></div><span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Beige</span></div></div></div><!-- Dynamic Color Stylist Message Box --><div id="color-tip-box" class="bg-white/90 border border-[#D4AF37]/20 p-5 rounded-2xl text-xs text-[#2C302E]/80 leading-relaxed font-light transition-all duration-300 shadow-inner min-h-[90px] flex items-center justify-center"><strong>Olive Green</strong>: Represents natural peace, harmony, and natural grace. The key color for our beautiful bridesmaids and sage leaf motifs.</div></div></div></div></section><section id="suite" class="py-24 px-6 max-w-6xl mx-auto"><div class="text-center mb-16"><p class="text-xs uppercase tracking-[0.25em] font-semibold text-[#3D5333] mb-2">Original Artistry</p><h2 class="font-serif-elegant text-4xl md:text-5xl font-light tracking-wide text-[#6B1D2F]">Our Printed Card Suite</h2><div class="w-12 h-px bg-[#D4AF37] mx-auto mt-4"></div><p class="text-xs text-gray-500 max-w-md mx-auto mt-4 font-light">
           Click on any of our beautifully crafted printed invitation cards to view the full resolution artwork and details.
-        </p></div><!-- Simple Clickable Card Gallery --><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-cover.png" alt="Wedding Cover Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">01. Cover Card</span><span class="text-[9px] text-[#3D5333]">Ivory Gold</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-timeline.png" alt="Wedding Timeline Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">02. Timeline</span><span class="text-[9px] text-[#3D5333]">Burgundy Green</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-sponsors.png" alt="Sponsors Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">03. Sponsors</span><span class="text-[9px] text-[#3D5333]">Parents Details</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-entourage.png" alt="Entourage Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">04. Entourage</span><span class="text-[9px] text-[#3D5333]">Groomsmen</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-secondary-sponsors.png" alt="Secondary Sponsors Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">05. Secondary</span><span class="text-[9px] text-[#3D5333]">Veil &amp; Cord</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-dresscode.png" alt="Dress Code Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">06. Dress Code</span><span class="text-[9px] text-[#3D5333]">Guests Palette</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-attireguide.png" alt="Attire Guide Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">07. Attire Guide</span><span class="text-[9px] text-[#3D5333]">Roles Info</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20"><img src="./assets/invitation-rsvp.png" alt="RSVP Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">08. RSVP Info</span><span class="text-[9px] text-[#3D5333]">Print Guidelines</span></div></div></div></section><div id="lightbox" class="fixed inset-0 z-50 hidden"><button class="absolute top-6 right-6 text-[#2C302E] hover:text-[#D4AF37] transition-colors cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-8 h-8"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button><img id="lightbox-img" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'&gt;&lt;/svg&gt;" alt="" class="block max-w-[92vw] max-h-[82vh] w-auto h-auto object-contain image-rendering-auto"></div><section id="rsvp" class="bg-[#3D5333]/10 py-24 px-6 border-t border-[#D4AF37]/20"><div class="max-w-3xl mx-auto"><div class="text-center mb-12"><p class="text-xs uppercase tracking-[0.25em] font-semibold text-[#3D5333] mb-2">Kindly Respond</p><h2 class="font-serif-elegant text-4xl md:text-5xl font-light tracking-wide text-[#6B1D2F]">Will You Celebrate With Us?</h2><div class="w-12 h-px bg-[#D4AF37] mx-auto mt-4"></div><p class="text-xs text-[#6B1D2F] mt-3 uppercase tracking-widest font-bold">Please respond on or before <span id="rsvp-deadline-text">November 31, 2026</span></p><p id="rsvp-fb-text" class="text-[10px] text-gray-500 mt-2 font-medium">Alternative RSVP via Facebook: <span id="groom-bride-fb">Ime Grace Catague / Rhey Christian Delos Reyes</span> • 09671771177</p></div><div id="rsvp-card" class="bg-white p-8 md:p-12 rounded-3xl border border-[#D4AF37]/30 shadow-md shadow-[#D4AF37]/5 relative overflow-hidden transition-all duration-500"><!-- Animated success modal inside the card --><div id="rsvp-success" class="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center text-center p-8 hidden opacity-0 transition-all duration-500"><div class="w-20 h-20 bg-[#3D5333]/10 rounded-full flex items-center justify-center mb-6 animate-pulse"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-10 h-10 text-[#3D5333]"><path d="M20 6 9 17l-5-5"></path></svg></div><h3 class="font-serif-elegant text-3xl font-light text-[#6B1D2F] mb-3">Response Submitted!</h3><p id="success-msg" class="text-sm text-gray-600 leading-relaxed font-light max-w-md mb-8">
+        </p></div><!-- Simple Clickable Card Gallery --><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-cover.png" alt="Wedding Cover Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">01. Cover Card</span><span class="text-[9px] text-[#3D5333]">Ivory Gold</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-timeline.png" alt="Wedding Timeline Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">02. Timeline</span><span class="text-[9px] text-[#3D5333]">Burgundy Green</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-sponsors.png" alt="Sponsors Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">03. Sponsors</span><span class="text-[9px] text-[#3D5333]">Parents Details</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-entourage.png" alt="Entourage Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">04. Entourage</span><span class="text-[9px] text-[#3D5333]">Groomsmen</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-secondary-sponsors.png" alt="Secondary Sponsors Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">05. Secondary</span><span class="text-[9px] text-[#3D5333]">Veil &amp; Cord</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-dresscode.png" alt="Dress Code Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">06. Dress Code</span><span class="text-[9px] text-[#3D5333]">Guests Palette</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-attireguide.png" alt="Attire Guide Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">07. Attire Guide</span><span class="text-[9px] text-[#3D5333]">Roles Info</span></div></div><div class="group cursor-pointer bg-[#F9F6F0] p-2 rounded-xl border border-[#D4AF37]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/10"><img src="./assets/invitation-rsvp.png" alt="RSVP Card" class="w-full aspect-[3/4] object-cover rounded-lg block"><div class="mt-3 flex items-center justify-between gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-[#6B1D2F]">08. RSVP Info</span><span class="text-[9px] text-[#3D5333]">Print Guidelines</span></div></div></div></section><section id="rsvp" class="bg-[#3D5333]/10 py-24 px-6 border-t border-[#D4AF37]/20"><div class="max-w-3xl mx-auto"><div class="text-center mb-12"><p class="text-xs uppercase tracking-[0.25em] font-semibold text-[#3D5333] mb-2">Kindly Respond</p><h2 class="font-serif-elegant text-4xl md:text-5xl font-light tracking-wide text-[#6B1D2F]">Will You Celebrate With Us?</h2><div class="w-12 h-px bg-[#D4AF37] mx-auto mt-4"></div><p class="text-xs text-[#6B1D2F] mt-3 uppercase tracking-widest font-bold">Please respond on or before <span id="rsvp-deadline-text">November 31, 2026</span></p><p id="rsvp-fb-text" class="text-[10px] text-gray-500 mt-2 font-medium">Alternative RSVP via Facebook: <span id="groom-bride-fb">Ime Grace Catague / Rhey Christian Delos Reyes</span> • 09671771177</p></div><div id="rsvp-card" class="bg-white p-8 md:p-12 rounded-3xl border border-[#D4AF37]/30 shadow-md shadow-[#D4AF37]/5 relative overflow-hidden transition-all duration-500"><!-- Animated success modal inside the card --><div id="rsvp-success" class="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center text-center p-8 hidden opacity-0 transition-all duration-500"><div class="w-20 h-20 bg-[#3D5333]/10 rounded-full flex items-center justify-center mb-6 animate-pulse"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-10 h-10 text-[#3D5333]"><path d="M20 6 9 17l-5-5"></path></svg></div><h3 class="font-serif-elegant text-3xl font-light text-[#6B1D2F] mb-3">Response Submitted!</h3><p id="success-msg" class="text-sm text-gray-600 leading-relaxed font-light max-w-md mb-8">
               Thank you for submitting your RSVP. We are absolutely thrilled to celebrate this magical evening together with you!
             </p><button class="text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-[#6B1D2F] transition-colors duration-300 cursor-pointer">
               Edit Submission
-            </button></div><!-- RSVP Form --><form id="rsvp-form" class="space-y-6"><div class="grid md:grid-cols-2 gap-6"><!-- Name Input --><div><label for="fullName" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Your Full Name</label><input type="text" id="fullName" required="" placeholder="e.g. Moises Bolanio" class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors"></div><!-- Guest Email --><div><label for="email" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Email Address</label><input type="email" id="email" required="" placeholder="e.g. moises@example.com" class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors"></div></div><!-- Attendance Choice --><div><span class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-3">Will You Be Attending?</span><div class="grid grid-cols-2 gap-4"><label class="flex items-center justify-center gap-3 border border-[#D4AF37]/40 rounded-xl p-4 cursor-pointer hover:bg-[#3D5333]/5 transition-all duration-300"><input type="radio" name="attendance" value="attending" checked="" class="accent-[#6B1D2F] w-4 h-4"><span class="text-xs text-[#2C302E] font-semibold uppercase tracking-wider">Accepts with Joy</span></label><label class="flex items-center justify-center gap-3 border border-[#D4AF37]/40 rounded-xl p-4 cursor-pointer hover:bg-[#3D5333]/5 transition-all duration-300"><input type="radio" name="attendance" value="declining" class="accent-[#6B1D2F] w-4 h-4"><span class="text-xs text-[#2C302E] font-semibold uppercase tracking-wider">Declines with Regret</span></label></div></div><!-- Interactive Meal Preference details (shown only if attending) --><div id="meal-preference-block" class="space-y-6 transition-all duration-300"><div class="grid md:grid-cols-2 gap-6"><!-- Guest Count --><div class="col-span-2"><label for="guests" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Number of Guests</label><select id="guests" class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors"><option value="1">1 Guest (Myself Only)</option><option value="2">2 Guests (Myself + 1 Additional Guest)</option></select></div></div><!-- Dietary restrictions --><div><label for="dietary" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Dietary Restrictions &amp; Allergies (Optional)</label><textarea id="dietary" rows="2" placeholder="Please let us know of any specific dietary requirements or allergies..." class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors placeholder:text-gray-300"></textarea></div></div><!-- Submit Button --><button type="submit" class="w-full bg-[#6B1D2F] hover:bg-[#521322] text-white text-xs font-semibold uppercase tracking-widest py-4 rounded-xl transition-all duration-300 shadow-md shadow-[#6B1D2F]/10 cursor-pointer">
+            </button></div><!-- RSVP Form --><form id="rsvp-form" class="space-y-6"><div class="grid md:grid-cols-2 gap-6"><!-- Name Input --><div><label for="fullName" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Your Full Name</label><input type="text" id="fullName" required="" placeholder="e.g. Moises Bolanio" class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors"></div><!-- Guest Email --><div><label for="email" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Email Address</label><input type="email" id="email" required="" placeholder="e.g. moises@example.com" class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors"></div></div><!-- Attendance Choice --><div><span class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-3">Will You Be Attending?</span><div class="grid grid-cols-2 gap-4"><label class="flex items-center justify-center gap-3 border border-[#D4AF37]/40 rounded-xl p-4 cursor-pointer hover:bg-[#3D5333]/5 transition-all duration-300"><input type="radio" name="attendance" value="attending" checked="" class="accent-[#6B1D2F] w-4 h-4"><span class="text-xs text-[#2C302E] font-semibold uppercase tracking-wider">Accepts with Joy</span></label><label class="flex items-center justify-center gap-3 border border-[#D4AF37]/40 rounded-xl p-4 cursor-pointer hover:bg-[#3D5333]/5 transition-all duration-300"><input type="radio" name="attendance" value="declining" class="accent-[#6B1D2F] w-4 h-4"><span class="text-xs text-[#2C302E] font-semibold uppercase tracking-wider">Declines with Regret</span></label></div></div><!-- Interactive Meal Preference details (shown only if attending) --><div id="meal-preference-block" class="space-y-6 transition-all duration-300"><div class="grid md:grid-cols-2 gap-6"><!-- Guest Count --><div class="col-span-2"><label for="guests" class="block text-xs uppercase tracking-wider font-semibold text-[#3D5333] mb-2">Number of Guests</label><select id="guests" class="w-full px-4 py-3 rounded-xl border border-[#D4AF37]/40 focus:outline-none focus:border-[#6B1D2F] bg-[#F9F6F0] text-sm text-[#2C302E] transition-colors"><option value="1">1 Guest (Myself Only)</option><option value="2">2 Guests (Myself + 1 Additional Guest)</option></select></div></div></div><!-- Submit Button --><button type="submit" class="w-full bg-[#6B1D2F] hover:bg-[#521322] text-white text-xs font-semibold uppercase tracking-widest py-4 rounded-xl transition-all duration-300 shadow-md shadow-[#6B1D2F]/10 cursor-pointer">
               Submit RSVP
-            </button></form></div></div></section></div><footer class="bg-[#2C302E] text-white py-16 px-6 text-center border-t border-[#D4AF37]/35"><div class="max-w-4xl mx-auto"><span class="font-serif-elegant text-4xl font-light tracking-widest text-[#D4AF37]">R &amp; I</span><div class="w-8 h-px bg-[#D4AF37]/40 mx-auto my-6"></div><p class="font-serif-elegant text-xl italic text-white/80 max-w-md mx-auto mb-8 font-light">
+            </button></form><div class="mt-8 border-t border-[#D4AF37]/20 pt-6 text-center"><p class="font-serif-elegant text-xl text-[#6B1D2F] mb-2">An Early Gift for the Couple</p><p class="text-xs text-gray-500 leading-relaxed max-w-md mx-auto mb-5">Your presence on our special day is the greatest blessing we could ever ask for. But should your heart wish to send us a little early gift as we begin our forever, we would be deeply touched — every kindness you share helps us build the home, the memories, and the beautiful beginnings we have always dreamed of.</p><button type="button" id="gift-btn" class="bg-[#D4AF37] hover:bg-[#c49a2c] text-[#2C302E] text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-xl transition-all duration-300 shadow-md shadow-[#D4AF37]/25 cursor-pointer">Gift for the Couple</button></div></div></div></section></div><footer class="bg-[#2C302E] text-white py-16 px-6 text-center border-t border-[#D4AF37]/35"><div class="max-w-4xl mx-auto"><span class="font-serif-elegant text-4xl font-light tracking-widest text-[#D4AF37]">R &amp; I</span><div class="w-8 h-px bg-[#D4AF37]/40 mx-auto my-6"></div><p class="font-serif-elegant text-xl italic text-white/80 max-w-md mx-auto mb-8 font-light">
           "What therefore God hath joined together, let not man put asunder."
         </p><p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">
           Rhey &amp; Ime Wedding • Saturday, December 26, 2026
         </p><p class="text-[9px] text-white/45 mt-4 font-light">
           Designed with love • All rights reserved
-        </p></div></footer><script>
+        </p></div></footer>
+</div>
+<div id="lightbox" class="fixed inset-0 z-50 hidden"><button class="absolute top-6 right-6 p-2 rounded-full bg-white/90 hover:bg-white shadow-lg text-[#2C302E] hover:text-[#6B1D2F] transition-colors cursor-pointer" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-8 h-8"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button><img id="lightbox-img" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'&gt;&lt;/svg&gt;" alt="" class="block max-w-[92vw] max-h-[82vh] w-auto h-auto object-contain image-rendering-auto"></div>
+<div id="gift-modal" class="fixed inset-0 z-[60] hidden p-6"><div id="gift-modal-card" class="relative w-full max-w-sm bg-white rounded-3xl border border-[#D4AF37]/30 p-7 pt-9 text-center shadow-2xl"><button id="gift-modal-close" type="button" aria-label="Close" class="absolute top-4 right-4 p-2 rounded-full bg-[#F9F6F0] hover:bg-[#3D5333]/10 text-[#2C302E] transition-colors cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button><span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[#D4AF37]">With All Our Love</span><h4 class="font-serif-elegant text-2xl text-[#6B1D2F] mt-1 mb-2">An Early Gift</h4><p class="text-xs text-gray-500 leading-relaxed mb-4">With warm hearts, we welcome any early blessing you wish to send our way. Scan the code below with your phone camera and your gift will find its way to us — though truly, having you beside us is gift enough.</p><div class="inline-block bg-white border border-[#D4AF37]/25 rounded-2xl p-3"><img src="./assets/qr%20code%20gift%20for%20the%20couple.jpg" alt="QR code for an early gift for the couple" class="w-48 sm:w-56 h-auto rounded-lg"></div><p class="text-[10px] text-gray-400 mt-3">Scan with your phone camera to send your gift</p></div></div>
+<script>
       // Initialize Lucide Icons
       lucide.createIcons();
       window.__capcut_export__ = function() {
@@ -729,8 +619,8 @@
       }
 
       // Dynamic Entourage Arrays defaults
-      let sponsorsList = ["Dr. Samson Lausa", "Dr. Aireen Jane Martorillas", "Dr. Mofe Tingal Gantes", "Joe D. Basanta"];
-      let groomsmenList = ["Nick BJ Bustillo", "Loui Jay Guacen", "Renz Layco", "Louie Bañadera", "Carmelo Lobaton", "Jules Malabor", "Bruce De Ocampo"];
+      let sponsorsList = ["DR. SAMSON LAUSA", "DR. AIREEN JANE MARTORILLAS", "DR. MOFE TINGAL GANTES", "DR. JOE D. BASANTA", "CONG JEFFREY FERRER"];
+      let groomsmenList = ["MR. Nick BJ Bustillo", "MR. Loui Jay Guacen", "MR. Renz Layco", "MR. Louie Bañadera", "MR. Carmelo Lobaton", "MR. Jules Malabor", "MR. Bruce De Ocampo"];
       let bridesmaidsList = ["Raiza Muriel Pineda", "Sophia Ysabel Lee", "Jannielle Mei Balino", "Hilary Shane Sanding", "Reylyn Marie Tuna", "Abby Peñacuba", "Coleen Torregue"];
       let flowergirlsList = ["Astrid Elizabeth Danielle Ybarrita", "Mary Belle Catague"];
 
@@ -964,8 +854,13 @@
         loadPersistedColors();
 
         if (localStorage.getItem("wedding_sponsors_list")) {
-          sponsorsList = JSON.parse(localStorage.getItem("wedding_sponsors_list"));
-          groomsmenList = JSON.parse(localStorage.getItem("wedding_groomsmen_list"));
+          sponsorsList = (JSON.parse(localStorage.getItem("wedding_sponsors_list")) || sponsorsList)
+            .map(name => String(name).trim().toUpperCase())
+            .map(name => ((/^DR\./.test(name) || !name.includes("JOE")) ? name : `DR. ${name}`));
+          if (!sponsorsList.some(name => name.includes("JEFFREY FERRER"))) {
+            sponsorsList.push("CONG JEFFREY FERRER");
+          }
+          groomsmenList = (JSON.parse(localStorage.getItem("wedding_groomsmen_list")) || groomsmenList).map(name => (/^MR\./i.test(String(name).trim()) ? String(name) : `MR. ${name}`));
           bridesmaidsList = JSON.parse(localStorage.getItem("wedding_bridesmaids_list"));
           flowergirlsList = JSON.parse(localStorage.getItem("wedding_flowergirls_list"));
         }
@@ -1093,16 +988,50 @@
         showColorTip(allowed[0]);
       }
 
+      const colorHex = { olive: "#3D5333", burgundy: "#6B1D2F", black: "#1A1A1A", beige: "#E6D5C3" };
+
       function showColorTip(colorName) {
         const descBox = document.getElementById("color-tip-box");
-        descBox.innerHTML = colorDescriptions[colorName];
-        
-        // Highlight active swatch in ring
+        if (!descBox || !colorDescriptions[colorName]) return;
+
+        // Highlight active swatch ring
         document.querySelectorAll(".swatch-ring").forEach(ring => {
           ring.classList.remove("ring-4", "ring-[#D4AF37]/40");
         });
-        document.getElementById(`ring-${colorName}`).classList.add("ring-4", "ring-[#D4AF37]/40");
+        const activeRing = document.getElementById(`ring-${colorName}`);
+        if (activeRing) activeRing.classList.add("ring-4", "ring-[#D4AF37]/40");
+
+        // Smooth cross-fade into this color's small explanation
+        descBox.style.opacity = "0";
+        clearTimeout(descBox._tipTimer);
+        descBox._tipTimer = setTimeout(() => {
+          descBox.innerHTML = `
+            <div class="flex flex-col items-center gap-2 text-center">
+              <span class="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
+                <span class="inline-block w-3 h-3 rounded-full border border-black/10" style="background:${colorHex[colorName] || "transparent"}"></span>
+                ${colorName} &middot; ${colorHex[colorName] || ""}
+              </span>
+              <p>${colorDescriptions[colorName]}</p>
+            </div>`;
+          descBox.style.opacity = "1";
+        }, 160);
       }
+
+      // Every swatch is clickable (and keyboard accessible)
+      document.querySelectorAll(".swatch-container").forEach(swatch => {
+        const colorName = swatch.dataset.color;
+        swatch.setAttribute("role", "button");
+        swatch.setAttribute("tabindex", "0");
+        swatch.setAttribute("aria-label", `Show meaning of the ${colorName} color swatch`);
+
+        swatch.addEventListener("click", () => showColorTip(colorName));
+        swatch.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            showColorTip(colorName);
+          }
+        });
+      });
 
       // Initialize default view
       setTimeout(() => {
@@ -1173,6 +1102,7 @@
       // Lightbox Modal functions
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = document.getElementById("lightbox-img");
+      let lightboxOpenedAt = 0;
 
       function openLightbox(src, caption) {
         if (!lightbox || !lightboxImg) return;
@@ -1183,6 +1113,8 @@
         lightbox.classList.remove("hidden");
         lightbox.style.pointerEvents = "auto";
         lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        lightboxOpenedAt = Date.now();
       }
 
       function closeLightbox() {
@@ -1190,6 +1122,7 @@
         lightbox.classList.add("hidden");
         lightbox.style.pointerEvents = "none";
         lightbox.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
       }
 
       const suiteCards = document.querySelectorAll("#suite .group");
@@ -1216,8 +1149,6 @@
         }
 
         card.addEventListener("click", openSuiteCard);
-        card.addEventListener("pointerup", openSuiteCard);
-        card.addEventListener("touchend", openSuiteCard, { passive: false });
         card.addEventListener("keydown", function (event) {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -1231,15 +1162,52 @@
         closeLightboxButton.addEventListener("click", closeLightbox);
       }
 
+      // Tap anywhere on the shown card (image or backdrop) to go back
       lightbox.addEventListener("click", function (event) {
-        if (event.target === lightbox) {
-          closeLightbox();
-        }
+        if (Date.now() - lightboxOpenedAt < 350) return;
+        closeLightbox();
       });
 
       document.addEventListener("keydown", function (event) {
         if (event.key === "Escape" && !lightbox.classList.contains("hidden")) {
           closeLightbox();
+        }
+      });
+
+      // Gift QR Modal
+      const giftModal = document.getElementById("gift-modal");
+      const giftModalClose = document.getElementById("gift-modal-close");
+      const giftBtn = document.getElementById("gift-btn");
+      let giftModalOpenedAt = 0;
+
+      function openGiftModal() {
+        if (!giftModal) return;
+        giftModal.classList.remove("hidden");
+        giftModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        giftModalOpenedAt = Date.now();
+      }
+
+      function closeGiftModal() {
+        if (!giftModal) return;
+        giftModal.classList.add("hidden");
+        giftModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      if (giftBtn) giftBtn.addEventListener("click", openGiftModal);
+      if (giftModalClose) giftModalClose.addEventListener("click", closeGiftModal);
+
+      if (giftModal) {
+        giftModal.addEventListener("click", function (event) {
+          if (Date.now() - giftModalOpenedAt < 350) return;
+          if (event.target === giftModal) closeGiftModal();
+        });
+      }
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && giftModal && !giftModal.classList.contains("hidden")) {
+          closeGiftModal();
         }
       });
 
@@ -1285,7 +1253,6 @@
         const guestEmail = document.getElementById("email").value.trim();
         const attendance = document.querySelector('input[name="attendance"]:checked').value;
         const guests = document.getElementById("guests").value;
-        const dietary = document.getElementById("dietary").value.trim();
         const submittedAt = new Date().toISOString();
 
         const entry = {
@@ -1293,7 +1260,6 @@
           email: guestEmail,
           attendance,
           guests,
-          dietary,
           submittedAt
         };
 
@@ -1519,18 +1485,27 @@
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
 
-        envelopePrelude.classList.add("opening");
         envelopeStage.classList.add("opened");
         document.body.classList.add("invitation-open");
 
-        setTimeout(() => {
-          invitationShell.classList.add("is-visible");
-        }, 600);
+        // 1. the flap folds open and the letter glides out
+        envelopePrelude.classList.add("opening");
 
+        // 2. the letter settles, then the scene dissolves into the invitation
+        setTimeout(() => {
+          envelopePrelude.classList.add("dissolve");
+          invitationShell.classList.add("is-visible");
+        }, 2100);
+
+        // 3. retire the prelude once the page has faded in
         setTimeout(() => {
           envelopePrelude.classList.add("hidden");
-          envelopePrelude.classList.remove("opening");
-        }, 2000);
+        }, 2500);
+
+        // 4. reset the (now invisible) scene so the sequence can replay
+        setTimeout(() => {
+          envelopePrelude.classList.remove("opening", "dissolve");
+        }, 4400);
       }
 
       if (envelopeStage) {
@@ -1541,24 +1516,6 @@
             openInvitationEnvelope();
           }
         });
-      }
-
-      const sealElement = document.querySelector(".seal");
-      if (sealElement) {
-        sealElement.addEventListener("click", function (event) {
-          event.stopPropagation();
-          openInvitationEnvelope();
-        });
-        sealElement.addEventListener("keydown", function (event) {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            event.stopPropagation();
-            openInvitationEnvelope();
-          }
-        });
-        sealElement.setAttribute("role", "button");
-        sealElement.setAttribute("tabindex", "0");
-        sealElement.setAttribute("aria-label", "Open wedding invitation");
       }
 
       window.addEventListener("load", function () {

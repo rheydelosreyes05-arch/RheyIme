@@ -16,7 +16,6 @@ function ensureDataFile() {
       'Email',
       'Attendance',
       'Number of Guests',
-      'Dietary Restrictions',
       'Submitted At'
     ].join(',');
     fs.writeFileSync(RSVP_FILE, `${header}\n`, 'utf8');
@@ -36,7 +35,6 @@ function appendRsvpEntry(entry) {
     entry.email,
     entry.attendance,
     entry.guests,
-    entry.dietary,
     entry.submittedAt
   ].map(escapeCsv).join(',');
 
@@ -111,7 +109,6 @@ const server = http.createServer((req, res) => {
           email: String(entry.email || '').trim(),
           attendance: String(entry.attendance || '').trim(),
           guests: String(entry.guests || '1'),
-          dietary: String(entry.dietary || '').trim(),
           submittedAt: entry.submittedAt || new Date().toISOString()
         };
 
@@ -140,7 +137,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  let filePath = requestUrl.pathname === '/' ? path.join(ROOT, 'wedding-invite-romantic.html') : path.join(ROOT, requestUrl.pathname.replace(/^\//, ''));
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(requestUrl.pathname);
+  } catch (error) {
+    decodedPath = requestUrl.pathname;
+  }
+
+  let filePath = decodedPath === '/' ? path.join(ROOT, 'index.html') : path.join(ROOT, decodedPath.replace(/^\//, ''));
 
   if (!filePath.startsWith(ROOT)) {
     res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -150,7 +154,7 @@ const server = http.createServer((req, res) => {
 
   fs.stat(filePath, (error, stats) => {
     if (!error && stats.isDirectory()) {
-      filePath = path.join(filePath, 'wedding-invite-romantic.html');
+      filePath = path.join(filePath, 'index.html');
     }
 
     if (!error && stats && stats.isFile()) {
@@ -158,7 +162,7 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    serveStaticFile(path.join(ROOT, 'wedding-invite-romantic.html'), res);
+    serveStaticFile(path.join(ROOT, 'index.html'), res);
   });
 });
 
