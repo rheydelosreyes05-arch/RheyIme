@@ -82,7 +82,9 @@ function serveStaticFile(filePath, res) {
       '.svg': 'image/svg+xml',
       '.ico': 'image/x-icon',
       '.gif': 'image/gif',
-      '.webp': 'image/webp'
+      '.webp': 'image/webp',
+      '.mp4': 'video/mp4',
+      '.webm': 'video/webm'
     };
 
     res.writeHead(200, { 'Content-Type': contentTypes[ext] || 'application/octet-stream' });
