@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "rheyime.vercel.app" }],
+      "destination": "https://rhey-ime-wedding-invitation.vercel.app/$1",
+      "permanent": true
+    }
+  ]
+}
