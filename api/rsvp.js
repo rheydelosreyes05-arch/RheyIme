@@ -73,16 +73,55 @@ function entriesToCsv(entries) {
   const header = ['Full Name', 'Email', 'Attendance', 'Number of Guests', 'Submitted At'];
   const escape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 
-  const rows = entries
-    .slice()
-    .reverse()
-    .map((entry) =>
-      [entry.fullName, entry.email, entry.attendance, entry.guests, entry.submittedAt]
-        .map(escape)
-        .join(',')
-    );
+  const rows = entries.map((entry) =>
+    [entry.fullName, entry.email, entry.attendance, entry.guests, entry.submittedAt]
+      .map(escape)
+      .join(',')
+  );
 
   return [header.map(escape).join(',')].concat(rows).join('\n') + '\n';
+}
+
+function parseCsvRows(csv) {
+  const text = String(csv || '').replace(/^\uFEFF/, '');
+  const lines = text.trim().split(/\r?\n/);
+  if (!lines.length) return [];
+
+  const header = lines[0].split(',').map((key) => key.replace(/^"|"$/g, ''));
+  return lines
+    .slice(1)
+    .filter(Boolean)
+    .map((line) => {
+      const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+      const row = {};
+      header.forEach((key, index) => {
+        const value = values[index];
+        row[key] = value != null ? value.replace(/^"|"$/g, '').replace(/""/g, '"') : '';
+      });
+      return {
+        fullName: row['Full Name'],
+        email: row['Email'],
+        attendance: row['Attendance'],
+        guests: row['Number of Guests'],
+        submittedAt: row['Submitted At']
+      };
+    });
+}
+
+function mergeEntries(...lists) {
+  const byKey = new Map();
+  lists.flat().forEach((entry) => {
+    if (!entry || !entry.email) return;
+    const key = `${String(entry.email).trim().toLowerCase()}|${String(entry.fullName).trim().toLowerCase()}`;
+    const existing = byKey.get(key);
+    if (!existing || (entry.submittedAt && (!existing.submittedAt || entry.submittedAt > existing.submittedAt))) {
+      byKey.set(key, entry);
+    }
+  });
+
+  return [...byKey.values()].sort((a, b) =>
+    String(a.submittedAt || '').localeCompare(String(b.submittedAt || ''))
+  );
 }
 
 async function githubRequest(path, options = {}) {
@@ -101,20 +140,28 @@ async function githubRequest(path, options = {}) {
 async function syncCsvToGitHub(entries) {
   if (!GITHUB_TOKEN) return;
 
-  const content = Buffer.from(entriesToCsv(entries), 'utf8').toString('base64');
-
   for (let attempt = 0; attempt < 5; attempt++) {
     const getResponse = await githubRequest(CSV_PATH);
-    const get = await getResponse.json().catch(() => ({}));
-    const oldSha = getResponse.ok ? get.sha : undefined;
+    const file = await getResponse.json().catch(() => ({}));
+
+    let merged = entries;
+    let mergedCsv;
+    if (getResponse.ok && file.content) {
+      const remoteCsv = Buffer.from(file.content, 'base64').toString('utf8');
+      merged = mergeEntries(parseCsvRows(remoteCsv), entries);
+      mergedCsv = entriesToCsv(merged);
+      if (remoteCsv === mergedCsv) return; // nothing changed
+    } else {
+      mergedCsv = entriesToCsv(merged);
+    }
 
     const putResponse = await githubRequest(CSV_PATH, {
       method: 'PUT',
       body: {
-        message: `Update RSVP entries (${entries.length} total)`,
-        content,
+        message: `Update RSVP entries (${merged.length} total)`,
+        content: Buffer.from(mergedCsv, 'utf8').toString('base64'),
         branch: GITHUB_BRANCH,
-        ...(oldSha ? { sha: oldSha } : {})
+        ...(file.sha ? { sha: file.sha } : {})
       }
     });
 
@@ -180,3 +227,5 @@ module.exports = async (req, res) => {
 
   res.status(405).json({ ok: false, message: 'Method not allowed' });
 };
+
+module.exports.syncCsvToGitHub = syncCsvToGitHub;
