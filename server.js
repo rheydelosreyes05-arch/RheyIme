@@ -48,11 +48,12 @@ function readCsvRows() {
   if (!content) return [];
 
   const lines = content.split(/\r?\n/);
-  const header = lines[0].split(',');
+  const splitLine = (line) => line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map((value) => value.replace(/^"|"$/g, '').replace(/""/g, '"'));
+  const header = splitLine(lines[0]);
   return lines.slice(1).filter(Boolean).map((line) => {
-    const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    const values = splitLine(line);
     const row = {};
-    header.forEach((key, index) => { row[key] = values[index]?.replace(/^"|"$/g, '').replace(/""/g, '"'); });
+    header.forEach((key, index) => { row[key] = values[index]; });
     return row;
   });
 }
@@ -84,7 +85,11 @@ function serveStaticFile(filePath, res) {
       '.gif': 'image/gif',
       '.webp': 'image/webp',
       '.mp4': 'video/mp4',
-      '.webm': 'video/webm'
+      '.webm': 'video/webm',
+      '.mp3': 'audio/mpeg',
+      '.m4a': 'audio/mp4',
+      '.wav': 'audio/wav',
+      '.ogg': 'audio/ogg'
     };
 
     res.writeHead(200, { 'Content-Type': contentTypes[ext] || 'application/octet-stream' });
