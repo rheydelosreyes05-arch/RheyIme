@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Envelope Opening Guide — edit both cut lines</title>
+<style>
+  :root { --stage-w: min(80vw, 56vh, 400px); }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 28px 20px 70px; font-family: "Segoe UI", system-ui, sans-serif; background: #0d1b13; color: #eef3ea; }
+  h1 { font-size: 1.15rem; font-weight: 700; margin: 0 0 4px; }
+  p.sub { margin: 0 0 24px; color: #9fb3a4; font-size: .82rem; }
+  .layout { display: flex; flex-wrap: wrap; gap: 36px; align-items: flex-start; justify-content: center; }
+
+  .stage { position: relative; width: var(--stage-w); aspect-ratio: 1240 / 1748; border-radius: 10px; perspective: 1700px; }
+  .stage .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; display: block; }
+  .interior { position: absolute; inset: 0; z-index: 2; border-radius: 10px;
+    background: linear-gradient(180deg,#24361f 0%,#1a2a17 45%,#101c10 100%);
+    box-shadow: inset 0 -14px 26px rgba(0,0,0,.45); }
+  .flap { position: absolute; inset: 0; z-index: 3; transform-origin: 50% 0%; transform-style: preserve-3d; }
+  .flap.bottom { transform-origin: 50% 100%; }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .face.front { background-image: url("./assets/envelope.webp"); background-size: cover; background-position: center; }
+  .face.back { transform: rotateX(180deg); background: linear-gradient(180deg,#2b3f24 0%,#1c2c18 60%,#131f12 100%); }
+
+  .seam, .handles { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .seam { z-index: 4; pointer-events: none; }
+  .handles { z-index: 6; }
+  .seam text { font-family: "Segoe UI", system-ui, sans-serif; font-weight: 700; paint-order: stroke; stroke: #0d1b13; stroke-width: .6px; stroke-linejoin: round; }
+  .handle { fill: #fff; stroke-width: 1.8; vector-effect: non-scaling-stroke; cursor: grab; pointer-events: auto; }
+  .handle:hover { fill: #fff6d8; }
+  .handle.top { stroke: #d4af37; }
+  .handle.bot { stroke: #ff78be; }
+  .handle.top.apex { fill: #ffd666; }
+  .handle.bot.apex { fill: #ff78be; }
+
+  .controls { width: min(360px, 92vw); display: flex; flex-direction: column; gap: 15px;
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.10); border-radius: 14px; padding: 20px; }
+  .controls h3 { margin: 2px 0 2px; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: #9fb3a4; }
+  .ctl { display: flex; flex-direction: column; gap: 6px; }
+  .ctl label { font-size: .82rem; display: flex; justify-content: space-between; }
+  .ctl label b { color: #f4e3a0; }
+  input[type=range] { width: 100%; accent-color: #d4af37; }
+  .btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  button { flex: 1; min-width: 96px; padding: 9px 12px; border-radius: 10px; cursor: pointer; font: inherit; font-size: .8rem; font-weight: 600; color: #0d1b13; background: #d4af37; border: none; }
+  button.ghost { background: rgba(255,255,255,.08); color: #eef3ea; border: 1px solid rgba(255,255,255,.16); }
+  .chk { display: flex; align-items: center; gap: 9px; font-size: .83rem; }
+  .sw { width: 20px; height: 0; border-top: 3px solid; border-radius: 2px; }
+  textarea { width: 100%; height: 168px; resize: vertical; font-family: ui-monospace, Consolas, monospace; font-size: .68rem; line-height: 1.4;
+    color: #d8e6d8; background: #08110b; border: 1px solid rgba(255,255,255,.14); border-radius: 8px; padding: 10px; }
+  .hint { font-size: .74rem; color: #8ea394; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <h1>Envelope opening guide — edit both cut lines</h1>
+  <p class="sub">Gold handles = top flap cut (opens up). Pink handles = bottom flap cut (opens down). Drag either set, corners included.</p>
+
+  <div class="layout">
+    <div class="stage" id="stage">
+      <img class="photo" src="./assets/envelope.webp" alt="envelope" />
+      <div class="interior" id="interiorTop"></div>
+      <div class="interior" id="interiorBottom"></div>
+      <div class="flap top" id="flapTop"><div class="face front" id="topFront"></div><div class="face back" id="topBack"></div></div>
+      <div class="flap bottom" id="flapBottom"><div class="face front" id="botFront"></div><div class="face back" id="botBack"></div></div>
+
+      <svg class="seam" id="seam" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <polygon id="seamTop" fill="rgba(255,214,102,.14)" stroke="#ffd666" stroke-width="1" vector-effect="non-scaling-stroke"/>
+        <polygon id="seamBottom" fill="rgba(255,120,190,.14)" stroke="#ff78be" stroke-width="1" vector-effect="non-scaling-stroke"/>
+        <polyline id="cutTop" fill="none" stroke="#ffd666" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+        <polyline id="cutBottom" fill="none" stroke="#ff78be" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+        <text x="50" y="9" text-anchor="middle" fill="#ffd666" font-size="5">TOP FLAP CUT · opens up</text>
+        <text x="50" y="96" text-anchor="middle" fill="#ff78be" font-size="5">BOTTOM FLAP CUT · opens down</text>
+      </svg>
+      <svg class="handles" id="handles" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="controls">
+      <h3>Cut lines</h3>
+      <label class="chk"><input id="mirrorLR" type="checkbox" checked /> Mirror left ↔ right (symmetric)</label>
+      <label class="chk"><input id="linkTB" type="checkbox" /> Link top ↔ bottom (mirror each other)</label>
+      <label class="chk"><input id="editHandles" type="checkbox" checked /> Show drag handles</label>
+      <div class="btnrow"><button id="resetLines" class="ghost">Reset lines</button></div>
+      <p class="hint" id="readout">—</p>
+
+      <h3>Opening</h3>
+      <div class="ctl">
+        <label>Opened <b><span id="openVal">0</span>%</b></label>
+        <input id="open" type="range" min="0" max="100" value="0" />
+      </div>
+      <div class="btnrow">
+        <button id="play">Play open</button>
+        <button id="reset" class="ghost">Close</button>
+      </div>
+
+      <h3>Marks</h3>
+      <label class="chk"><input id="showSeam" type="checkbox" checked /> Show seam lines &amp; labels</label>
+
+      <h3>Export</h3>
+      <div class="btnrow"><button id="copy">Copy CSS</button></div>
+      <textarea id="export" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const stage = $("stage");
+  const topFront = $("topFront"), topBack = $("topBack"), botFront = $("botFront"), botBack = $("botBack");
+  const interiorTop = $("interiorTop"), interiorBottom = $("interiorBottom");
+  const seamTop = $("seamTop"), seamBottom = $("seamBottom"), cutTop = $("cutTop"), cutBottom = $("cutBottom");
+  const handlesSvg = $("handles");
+
+  const NODE_X = [0, 20, 40, 50, 60, 80, 100];
+  const NODES = 7, MID = 3;
+  let topNodes = [], botNodes = [];
+
+  function arcY(apex, x) {
+    const cy = (apex * apex - 2500) / (2 * apex);
+    const R = Math.abs(apex - cy);
+    return cy + Math.sqrt(Math.max(0, R * R - (x - 50) * (x - 50)));
+  }
+  function defaultNodes() {
+    topNodes = NODE_X.map((x) => ({ x, y: +Math.max(0, Math.min(100, arcY(50, x))).toFixed(2) }));
+    topNodes[0].y = 0; topNodes[NODES - 1].y = 0;
+    botNodes = topNodes.map((n) => ({ x: n.x, y: +(100 - n.y).toFixed(2) }));
+  }
+
+  const P = (a) => a.map((p) => p[0] + "% " + p[1] + "%").join(", ");
+  const PT = (a) => a.map((p) => p[0] + "," + p[1]).join(" ");
+  const rd = (a) => a.map((n) => ({ x: +n.x.toFixed(2), y: +n.y.toFixed(2) }));
+
+  function petal(cut, top) {
+    const poly = top ? [[0, 0], [100, 0]] : [[0, 100], [100, 100]];
+    for (let i = cut.length - 1; i >= 0; i--) poly.push([cut[i].x, cut[i].y]);
+    return poly;
+  }
+
+  function build() {
+    const t = rd(topNodes), b = rd(botNodes);
+    return { topPetal: petal(t, true), botPetal: petal(b, false), t, b };
+  }
+
+  let geo = null;
+  function render() {
+    geo = build();
+    const topC = "polygon(" + P(geo.topPetal) + ")";
+    const botC = "polygon(" + P(geo.botPetal) + ")";
+    topFront.style.clipPath = topC; topBack.style.clipPath = topC; interiorTop.style.clipPath = topC;
+    botFront.style.clipPath = botC; botBack.style.clipPath = botC; interiorBottom.style.clipPath = botC;
+    seamTop.setAttribute("points", PT(geo.topPetal));
+    seamBottom.setAttribute("points", PT(geo.botPetal));
+    cutTop.setAttribute("points", PT(geo.t));
+    cutBottom.setAttribute("points", PT(geo.b));
+    drawHandles();
+    updateExport();
+    $("readout").textContent = "Top: " + topNodes.length + " nodes · Bottom: " + botNodes.length + " nodes";
+  }
+
+  function addHandle(n, i, side) {
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", n.x); c.setAttribute("cy", n.y); c.setAttribute("r", 2.1);
+    c.setAttribute("class", "handle " + side + (i === MID ? " apex" : ""));
+    c.addEventListener("pointerdown", (e) => startDrag(e, side, i));
+    handlesSvg.appendChild(c);
+  }
+  function drawHandles() {
+    const show = $("editHandles").checked;
+    handlesSvg.style.display = show ? "block" : "none";
+    if (!show) return;
+    handlesSvg.innerHTML = "";
+    topNodes.forEach((n, i) => addHandle(n, i, "top"));
+    botNodes.forEach((n, i) => addHandle(n, i, "bot"));
+  }
+
+  let drag = null;
+  function startDrag(e, side, i) {
+    e.preventDefault();
+    drag = { side, i };
+    window.addEventListener("pointermove", onDrag);
+    window.addEventListener("pointerup", endDrag);
+  }
+  function moveIn(list, i, x, y) {
+    y = Math.max(0, Math.min(100, +y.toFixed(2)));
+    if (i === MID && $("mirrorLR").checked) {
+      x = 50;
+    } else {
+      const minX = i === 0 ? 0 : list[i - 1].x + 2;
+      const maxX = i === NODES - 1 ? 100 : list[i + 1].x - 2;
+      x = Math.max(minX, Math.min(maxX, +x.toFixed(2)));
+    }
+    list[i].x = x; list[i].y = y;
+    if ($("mirrorLR").checked) {
+      const j = NODES - 1 - i;
+      if (j !== i) { list[j].x = +(100 - x).toFixed(2); list[j].y = y; }
+    }
+  }
+  function onDrag(e) {
+    if (!drag) return;
+    const r = stage.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    const { side, i } = drag;
+    if (side === "top") {
+      moveIn(topNodes, i, x, y);
+      if ($("linkTB").checked) { botNodes[i].x = topNodes[i].x; botNodes[i].y = +(100 - topNodes[i].y).toFixed(2); }
+    } else {
+      moveIn(botNodes, i, x, y);
+      if ($("linkTB").checked) { topNodes[i].x = botNodes[i].x; topNodes[i].y = +(100 - botNodes[i].y).toFixed(2); }
+    }
+    render();
+  }
+  function endDrag() {
+    drag = null;
+    window.removeEventListener("pointermove", onDrag);
+    window.removeEventListener("pointerup", endDrag);
+  }
+
+  function setOpen(pct) {
+    const a = (pct / 100) * 180;
+    $("flapTop").style.transform = "rotateX(" + a + "deg)";
+    $("flapBottom").style.transform = "rotateX(" + (-a) + "deg)";
+    $("open").value = pct;
+    $("openVal").textContent = Math.round(pct);
+  }
+
+  let playing = false;
+  function play() {
+    if (playing) return; playing = true;
+    const start = performance.now(), dur = 3600;
+    requestAnimationFrame(function frame(t) {
+      const p = Math.min(1, (t - start) / dur);
+      setOpen((1 - Math.pow(1 - p, 3)) * 100);
+      if (p < 1) requestAnimationFrame(frame); else playing = false;
+    });
+  }
+
+  function updateExport() {
+    const topC = "polygon(" + P(geo.topPetal) + ")";
+    const botC = "polygon(" + P(geo.botPetal) + ")";
+    const nArr = (a) => "[" + a.map((n) => "[" + n.x + ", " + n.y + "]").join(", ") + "]";
+    $("export").value =
+      "/* top cut nodes (x%, y%), left -> right */\n" + nArr(geo.t) + "\n\n" +
+      "/* bottom cut nodes (x%, y%), left -> right */\n" + nArr(geo.b) + "\n\n" +
+      "/* .env-flap-face  (top petal) */\nclip-path: " + topC + ";\n\n" +
+      "/* .env-flap-bottom-face  (bottom petal) */\nclip-path: " + botC + ";";
+  }
+
+  $("open").addEventListener("input", (e) => setOpen(+e.target.value));
+  $("play").addEventListener("click", play);
+  $("reset").addEventListener("click", () => { playing = false; setOpen(0); });
+  $("showSeam").addEventListener("change", (e) => { $("seam").style.display = e.target.checked ? "block" : "none"; });
+  $("editHandles").addEventListener("change", drawHandles);
+  $("resetLines").addEventListener("click", () => { defaultNodes(); render(); });
+  $("copy").addEventListener("click", () => {
+    const ta = $("export"); ta.removeAttribute("readonly"); ta.select(); document.execCommand("copy"); ta.setAttribute("readonly", "");
+    $("copy").textContent = "Copied!"; setTimeout(() => ($("copy").textContent = "Copy CSS"), 1200);
+  });
+
+  defaultNodes();
+  render();
+  setOpen(0);
+</script>
+</body>
+</html>
